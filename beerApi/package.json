@@ -1,0 +1,23 @@
+{
+  "name": "beerApi",
+  "version": "1.0.0",
+  "description": "The beer API",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://www.github.com/watsokel/beerFest"
+  },
+  "keywords": [
+    "beer",
+    "api"
+  ],
+  "author": "bryce",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.3",
+    "mysql": "^2.8.0"
+  }
+}
