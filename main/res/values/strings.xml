@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Hoppy</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_default_event_all_beer">DefaultEventAllBeer</string>
+    <string name="login_with_facebook">Log in with Facebook</string>
+    <string name="beer_fest_tracker">Beer Fest Tracker</string>
+    <string name="hoppy_logo">hoppyLogo</string>
+</resources>
