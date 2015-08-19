@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="3px" >
+
+    <ImageView
+        android:id="@+id/eventLogo"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:background="@drawable/eventlogo" />
+
+    <TextView android:id="@+id/eventName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5px" android:layout_marginTop="2px"
+        android:layout_toRightOf="@+id/eventLogo"
+        android:padding="5dp"
+        android:text="Event Name"
+        android:textColor="#000000"
+        android:fontFamily="sans-serif-thin"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView android:id="@+id/eventDetails"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_below="@+id/eventName"
+        android:layout_marginLeft="5dip"
+        android:layout_toRightOf="@+id/eventLogo"
+        android:padding="5dp"
+        android:text="Event Date..."
+        android:textColor="#777777"
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+</RelativeLayout>
