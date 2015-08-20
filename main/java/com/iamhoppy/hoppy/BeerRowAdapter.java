@@ -28,13 +28,19 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
 
         TextView beerName = (TextView)customView.findViewById(R.id.beerName);
         TextView breweryName = (TextView)customView.findViewById(R.id.breweryName);
-        TextView beerDetails = (TextView)customView.findViewById(R.id.beerDetails);
+        TextView beerType = (TextView)customView.findViewById(R.id.beerType);
+        TextView beerABVIBU = (TextView)customView.findViewById(R.id.beerABVIBU);
         TextView score = (TextView)customView.findViewById(R.id.score);
-        TextView userRating = (TextView)customView.findViewById(R.id.userRating);
+        TextView favorited = (TextView)customView.findViewById(R.id.favorited);
+
 
         breweryLogo.setImageResource(R.drawable.alameda);
         beerName.setText(singleBeerItem.getName());
         breweryName.setText(singleBeerItem.getBrewery());
+        beerType.setText(singleBeerItem.getType());
+        beerABVIBU.setText("ABV "+singleBeerItem.getAbv() + ", IBU " +singleBeerItem.getIbu());
+        //beerABVIBU.setText(Double.toString(singleBeerItem.getAbv())+ ", " +Double.toString(singleBeerItem.getIbu()));
+
         Log.i(TAG, singleBeerItem.toString());
 
         return customView;

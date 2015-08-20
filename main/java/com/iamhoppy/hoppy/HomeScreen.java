@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeScreen extends AppCompatActivity {
-    private String beersString;
+    private String defaultEventBeerData;
 
     Handler handler = new Handler(){ //updates interface because threads can't
         @Override
@@ -38,7 +38,7 @@ public class HomeScreen extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             // Implement code here to be performed when
             // broadcast is detected
-            beersString = intent.getStringExtra("Beers");
+            defaultEventBeerData = intent.getStringExtra("DefaultEventBeerData");
             //Parse Objects
 
             //Enable login button
@@ -62,7 +62,7 @@ public class HomeScreen extends AppCompatActivity {
         Intent loginIntent = new Intent(this, DefaultEventAllBeers.class);
         String facebookCredential =  "FACEBOOK USERNAME/TOKEN";
         loginIntent.putExtra("facebookCredential",facebookCredential);
-        loginIntent.putExtra("Beers", beersString);
+        loginIntent.putExtra("DefaultEventBeerData", defaultEventBeerData);
         startActivity(loginIntent);
     }
 

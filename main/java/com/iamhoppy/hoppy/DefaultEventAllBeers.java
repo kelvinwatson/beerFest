@@ -22,29 +22,48 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DefaultEventAllBeers extends AppCompatActivity {
     public String jsonResponse;
     private List<Beer> beers = new ArrayList<Beer>();
+    private List<Event> events = new ArrayList<Event>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default_event_all_beer);
         Bundle bundle = getIntent().getExtras();
-        String beersString = bundle.getString("Beers");
+        String defaultEventBeerData = bundle.getString("DefaultEventBeerData");
         try {
-            JSONArray beersJSON = new JSONArray(beersString);
-            for(int i=0; i<beersJSON.length(); i++){
-                JSONObject beerObject = beersJSON.getJSONObject(i);
+            JSONObject eventBeersJSONObj = new JSONObject(defaultEventBeerData);
+
+            JSONArray beersJSONArr = eventBeersJSONObj.getJSONArray("beers");
+            for(int i=0, len=beersJSONArr.length(); i<len; i++){
+                JSONObject beerObj = beersJSONArr.getJSONObject(i);
                 Beer beer = new Beer();
-                beer.setName(beerObject.getString("beerName"));
-                //beer.setBrewery(beerObject.getString("brewName"));
-                beer.setType(beerObject.getString("beerType"));
-                beer.setAbv(beerObject.getDouble("beerABV"));
-                beer.setIbu(beerObject.getDouble("beerIBU"));
+                beer.setName(beerObj.getString("beerName"));
+                beer.setBrewery(beerObj.getString("breweryName"));
+                beer.setBreweryLogoURL(beerObj.getString("logoUrl"));
+                beer.setType(beerObj.getString("beerType"));
+                beer.setAbv(beerObj.getDouble("beerABV"));
+                beer.setIbu(beerObj.getDouble("beerIBU"));
+                beer.setDescription(beerObj.getString("beerDescription"));
                 beers.add(beer);
+            }
+
+            JSONArray eventsJSONArr = eventBeersJSONObj.getJSONArray("events");
+            System.out.println("eventsJSONArr="+eventsJSONArr.toString());
+            for(int i=0, len=eventsJSONArr.length(); i<len; i++){
+                JSONObject eventObj = eventsJSONArr.getJSONObject(i);
+                System.out.println("eventObj=" + eventObj.toString());
+                Event event = new Event();
+                event.setName(eventObj.getString("eventName"));
+                event.setDate(eventObj.getString("eventDate"));
+                event.setLogoURL(eventObj.getString("logoUrl"));
+                System.out.println("event=" + event.toString());
+                events.add(event);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -55,21 +74,6 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         //facebookText.setText(facebookPassedString);
 
         //Create spinner
-        //http://stackoverflow.com/questions/3609231/how-is-it-possible-to-create-a-spinner-with-images-instead-of-text
-        //http://mrbool.com/how-to-customize-spinner-in-android/28286
-        //String[] events = {"Fruit Beer Fest", "Oregon Brewers Festival", "Oktoberfest"};
-        //String[] eventDates = {"2015-06-12","2015-07-22","2015-09-12"};
-        //int eventLogos[] = { R.drawable.eventLogo, R.drawable.eventLogo, R.drawable.eventLogo};
-
-        List<Event> events = new ArrayList<Event>();
-        //TODO: Make API Call Get Beers Fill Beer List
-        for(int i=0; i<3; i++){
-            Event event = new Event();
-            event.setLogoURL("www.example.com");
-            event.setName("Fake Event" + i);
-            event.setDate("Fake Date" + i);
-            events.add(event);
-        }
         SpinnerAdapter eventAdapter = new EventSpinnerAdapter(this, events);
         Spinner eventSpinner = (Spinner)findViewById(R.id.eventSpinner);
         eventSpinner.setAdapter(eventAdapter);

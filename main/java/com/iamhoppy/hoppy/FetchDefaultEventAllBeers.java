@@ -42,7 +42,7 @@ public class FetchDefaultEventAllBeers extends Service {
                     String beerData = readStream(in);
                     Intent intent = new Intent();
                     intent.setAction("com.iamhoppy.hoppy.beers");
-                    intent.putExtra("Beers", beerData);
+                    intent.putExtra("DefaultEventBeerData", beerData);
                     sendBroadcast(intent);
 
                 }catch(IOException e){

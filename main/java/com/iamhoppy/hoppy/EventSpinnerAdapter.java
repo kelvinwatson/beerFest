@@ -35,7 +35,7 @@ class EventSpinnerAdapter extends ArrayAdapter<Event> {
 
         eventLogo.setImageResource(R.drawable.eventlogo);
         eventName.setText(singleEventItem.getName());
-        Log.i(TAG, singleEventItem.toString());
+        Log.i(TAG, "inGetView"+singleEventItem.toString());
 
         return customView;
     }

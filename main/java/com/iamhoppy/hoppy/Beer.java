@@ -8,8 +8,25 @@ public class Beer {
     private double ibu;
     private double abv;
     private double rating;
-    private String imgUrl;
     private String brewery;
+    private String breweryLogoURL;
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getBreweryLogoURL() {
+        return breweryLogoURL;
+    }
+
+    public void setBreweryLogoURL(String breweryLogoURL) {
+        this.breweryLogoURL = breweryLogoURL;
+    }
 
     public String getName() {
         return name;
@@ -49,14 +66,6 @@ public class Beer {
 
     public void setRating(double rating) {
         this.rating = rating;
-    }
-
-    public String getImgUrl() {
-        return imgUrl;
-    }
-
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
     }
 
     public String getBrewery() {
