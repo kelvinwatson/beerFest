@@ -2,11 +2,11 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    buildToolsVersion "23.0.0"
 
     defaultConfig {
-        applicationId "com.iamhoppy.hoppy"
-        minSdkVersion 8
+        applicationId "com.example.bryce.myapplication"
+        minSdkVersion 9
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -18,9 +18,12 @@ android {
         }
     }
 }
-
+repositories {
+    mavenCentral()
+}
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.squareup.picasso:picasso:2.3.2'
+    compile 'com.facebook.android:facebook-android-sdk:4.1.0'
 }

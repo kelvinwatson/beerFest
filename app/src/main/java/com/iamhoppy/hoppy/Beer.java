@@ -3,7 +3,7 @@ package com.iamhoppy.hoppy;
 /* Beer class
  */
 public class Beer {
-    private String id;
+    private int id;
     private String name;
     private String type;
     private String ibu;
@@ -14,11 +14,11 @@ public class Beer {
     private String description;
     private boolean favorited=false;
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

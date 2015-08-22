@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\Bryce\MyAndroidStudioProjects\app\build\intermediates\exploded-aar\com.facebook.android\facebook-android-sdk\4.1.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="a78bfd2ec508b123ee7c03f4006ba7996ef9a8dc">
+        <dex dex="C:\Users\Bryce\MyAndroidStudioProjects\app\build\intermediates\pre-dexed\debug\classes-b33878d0f5c8717f1a4dded7bfc1d1b5d1a35bc6.jar" />
+    </item>
+    <item
+        jar="C:\Users\Bryce\.gradle\caches\modules-2\files-2.1\com.parse.bolts\bolts-android\1.2.0\6ee2953ccf51ce72b6d548c30c4633b99eb4f9dd\bolts-android-1.2.0.jar"
+        jumboMode="false"
+        revision="23.0.0"
+        sha1="6ee2953ccf51ce72b6d548c30c4633b99eb4f9dd">
+        <dex dex="C:\Users\Bryce\MyAndroidStudioProjects\app\build\intermediates\pre-dexed\debug\bolts-android-1.2.0-c1a4cfc9dab3310c1392e3ec36f8a6b7862020f9.jar" />
+    </item>
+
+</items>

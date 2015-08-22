@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.util.Log;
 
+import com.squareup.picasso.Picasso;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,9 +18,11 @@ import java.util.List;
 
 class EventSpinnerAdapter extends ArrayAdapter<Event> {
     private static final String TAG = "com.iamhoppy.hoppy";
+    Context context;
 
     EventSpinnerAdapter(Context context, List events) {
         super(context, R.layout.custom_event_row, events);
+        this.context = context;
     }
 
     @Override
@@ -33,10 +37,14 @@ class EventSpinnerAdapter extends ArrayAdapter<Event> {
         Event singleEventItem = getItem(position);
 
         ImageView eventLogo = (ImageView)customView.findViewById(R.id.eventLogo);
+        Picasso.with(context)
+                .load(singleEventItem.getLogoURL())
+                .resize(80, 80)
+                .into(eventLogo);
+
         TextView eventName = (TextView)customView.findViewById(R.id.eventName);
         TextView eventDetails = (TextView)customView.findViewById(R.id.eventDetails);
 
-        eventLogo.setImageResource(R.drawable.eventlogo);
         eventName.setText(singleEventItem.getName());
         eventDetails.setText(singleEventItem.getDate());
         Log.i(TAG, "inGetView" + singleEventItem.toString());

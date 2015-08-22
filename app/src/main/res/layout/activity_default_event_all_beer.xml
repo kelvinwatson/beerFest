@@ -8,8 +8,6 @@
         android:id="@+id/eventSpinner"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/holo_green_dark"
-        android:popupBackground="@android:color/holo_green_dark"
         android:spinnerMode="dropdown" />
 
     <ListView

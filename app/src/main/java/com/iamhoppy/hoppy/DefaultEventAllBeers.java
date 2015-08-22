@@ -21,6 +21,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.facebook.appevents.AppEventsLogger;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,6 +51,7 @@ public class DefaultEventAllBeers extends AppCompatActivity {
             for(int i=0, len=beersJSONArr.length(); i<len; i++){
                 JSONObject beerObj = beersJSONArr.getJSONObject(i);
                 Beer beer = new Beer();
+                //beer.setId(beerObj.getInt("beerID"));
                 beer.setName(beerObj.getString("beerName"));
                 beer.setBrewery(beerObj.getString("breweryName"));
                 beer.setBreweryLogoURL(beerObj.getString("logoUrl"));
@@ -70,7 +73,7 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                 event.setName(eventObj.getString("eventName"));
                 event.setDate(eventObj.getString("eventDate"));
                 event.setLogoURL(eventObj.getString("logoUrl"));
-                System.out.println("eventObjName=" + event.getName());
+                System.out.println("eventLogo=" + event.getLogoURL());
                 events.add(event);
             }
         } catch (JSONException e) {
@@ -89,18 +92,39 @@ public class DefaultEventAllBeers extends AppCompatActivity {
 
         //Create list of beers
         ListAdapter beerAdapter = new BeerRowAdapter(this, beers);
-        ListView beerList = (ListView)findViewById(R.id.beerList); //get reference to listview
+        final ListView beerList = (ListView)findViewById(R.id.beerList); //get reference to listview
         beerList.setAdapter(beerAdapter);
         beerList.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        String selectedBeer = String.valueOf(parent.getItemAtPosition(position));
-                        Toast.makeText(DefaultEventAllBeers.this, "Rated!", Toast.LENGTH_SHORT).show();
+                        //String selectedBeer = String.valueOf(parent.getItemAtPosition(position));
+                        Beer selectedBeer = (Beer)(beerList.getItemAtPosition(position));
+                        //System.out.println("beer id=" + selectedBeer.getId());
+                        System.out.println("user selected=" + selectedBeer.getName());
+                        Toast.makeText(DefaultEventAllBeers.this, "loading...", Toast.LENGTH_SHORT).show();
+                        Intent viewBeerProfile = new Intent(DefaultEventAllBeers.this,BeerProfile.class);
+                        //intent.putExtra("BeerName",selectedBeer.getName());
+                        startActivity(viewBeerProfile);
+                        //really should be intent.putExtra("BeerID",selectedBeer.getId());
                     }
                 }
         );
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Logs 'install' and 'app activate' App Events.
+        AppEventsLogger.activateApp(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Logs 'app deactivate' App Event.
+        AppEventsLogger.deactivateApp(this);
     }
 
     public static void retrieveData(String JSONdata){

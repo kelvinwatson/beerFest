@@ -14,6 +14,8 @@ import android.os.Message;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.facebook.FacebookSdk;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,13 +44,17 @@ public class HomeScreen extends AppCompatActivity {
             //Parse Objects
 
             //Enable login button
-            ((Button)findViewById(R.id.facebookButton)).setEnabled(true);
+            ((Button)findViewById(R.id.login_button)).setEnabled(true);
         }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Initialize Facebook SDK prior to using UI components
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        String kh = FacebookSdk.getApplicationSignature(getApplicationContext());
+        System.out.println("kh="+kh);
         setContentView(R.layout.activity_home_screen);
         IntentFilter filter = new IntentFilter("com.iamhoppy.hoppy.beers");
         MyReceiver receiver = new MyReceiver();
@@ -60,8 +66,8 @@ public class HomeScreen extends AppCompatActivity {
 
     public void onClick(View view){
         Intent loginIntent = new Intent(this, DefaultEventAllBeers.class);
-        String facebookCredential =  "FACEBOOK USERNAME/TOKEN";
-        loginIntent.putExtra("facebookCredential",facebookCredential);
+        //String facebookCredential =  "FACEBOOK USERNAME/TOKEN";
+        //loginIntent.putExtra("facebookCredential",facebookCredential);
         loginIntent.putExtra("DefaultEventBeerData", defaultEventBeerData);
         startActivity(loginIntent);
     }

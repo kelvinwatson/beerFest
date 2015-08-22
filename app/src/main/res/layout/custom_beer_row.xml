@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="1"
-    android:measureWithLargestChild="false">
+    android:measureWithLargestChild="false"
+    android:descendantFocusability="blocksDescendants">
 
     <TableRow
         android:layout_width="match_parent"
