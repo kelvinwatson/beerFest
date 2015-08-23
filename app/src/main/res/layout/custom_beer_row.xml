@@ -18,10 +18,10 @@
             android:layout_width="0dp"
             android:layout_height="70dp"
             android:layout_marginRight="5dp"
-            android:src="@drawable/alameda"
             android:layout_column="0"
             android:layout_weight="25"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"
+            android:background="@android:color/transparent" />
 
         <LinearLayout
             android:id="@+id/beerAndBrewery"

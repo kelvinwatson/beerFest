@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /* Beer class
  */
-public class Beer implements Serializable {
+public class Beer implements Serializable, Comparable {
     private int id;
     private String name;
     private String type;
@@ -14,7 +14,7 @@ public class Beer implements Serializable {
     private String brewery;
     private String breweryLogoURL;
     private String description;
-    private boolean favorited=false;
+    private boolean favorited;
 
     public int getId() {
         return id;
@@ -96,4 +96,8 @@ public class Beer implements Serializable {
         this.favorited = favorited;
     }
 
+    @Override
+    public int compareTo(Object another) {
+        return this.name.compareTo(((Beer) another).getName());
+    }
 }

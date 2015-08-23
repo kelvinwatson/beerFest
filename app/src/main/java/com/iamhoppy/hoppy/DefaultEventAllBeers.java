@@ -3,6 +3,7 @@ package com.iamhoppy.hoppy;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -27,13 +29,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class DefaultEventAllBeers extends AppCompatActivity {
     public String jsonResponse;
     private List<Beer> beers = new ArrayList<Beer>();
+    private List<Beer> favoriteBeers = new ArrayList<Beer>();
     private List<Event> events = new ArrayList<Event>();
     private User user = new User();
 
@@ -45,27 +50,18 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default_event_all_beer);
-
+        //Receiver for UpdateFavorites Service
+        IntentFilter filter = new IntentFilter("com.iamhoppy.hoppy.favoriteDone");
+        MyReceiver receiver = new MyReceiver();
+        registerReceiver(receiver, filter);
         //Get default event & beer data, parse, and save data
         final Bundle bundle = getIntent().getExtras();
         String defaultEventBeerData = bundle.getString("DefaultEventBeerData");
         try {
             JSONObject startUpDataJSONObj = new JSONObject(defaultEventBeerData);
 
-            JSONArray beersJSONArr = startUpDataJSONObj.getJSONArray("beers");
-            for(int i=0, len=beersJSONArr.length(); i<len; i++){
-                JSONObject beerObj = beersJSONArr.getJSONObject(i);
-                Beer beer = new Beer();
-                beer.setId(beerObj.getInt("beerID"));
-                beer.setName(beerObj.getString("beerName"));
-                beer.setBrewery(beerObj.getString("breweryName"));
-                beer.setBreweryLogoURL(beerObj.getString("logoUrl"));
-                beer.setType(beerObj.getString("beerType"));
-                beer.setAbv(beerObj.getString("beerABV"));
-                beer.setIbu(beerObj.getString("beerIBU"));
-                beer.setDescription(beerObj.getString("beerDescription"));
-                beers.add(beer);
-            }
+            beers = parseBeers(startUpDataJSONObj, "beers");
+            favoriteBeers = parseBeers(startUpDataJSONObj, "favorites");
 
             JSONArray eventsJSONArr = startUpDataJSONObj.getJSONArray("events");
             System.out.println("eventsJSONArr="+eventsJSONArr.toString());
@@ -78,10 +74,11 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                 events.add(event);
             }
             JSONObject userJSONObj = startUpDataJSONObj.getJSONObject("user");
-            user.setFacebookCredential(userJSONObj.getString("facebookCredential"));
-            user.setFirstName(userJSONObj.getString("firstName"));
-            user.setLastName(userJSONObj.getString("lastName"));
+            user.setFacebookCredential(userJSONObj.getString("facebook_credential"));
+            user.setFirstName(userJSONObj.getString("first_name"));
+            user.setLastName(userJSONObj.getString("last_name"));
             user.setId(userJSONObj.getInt("id"));
+            System.out.println("UserOBJ: " + userJSONObj.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -97,7 +94,8 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         System.out.println("eventSpinnerAdapter set");
 
         //Create list of beers
-        ListAdapter beerAdapter = new BeerRowAdapter(this, beers);
+        System.out.println("UserID: " + user.getId());
+        ListAdapter beerAdapter = new BeerRowAdapter(this, beers, user);
         final ListView beerList = (ListView)findViewById(R.id.beerList); //get reference to listview
         beerList.setAdapter(beerAdapter);
         beerList.setOnItemClickListener(
@@ -105,12 +103,12 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         //String selectedBeer = String.valueOf(parent.getItemAtPosition(position));
-                        Beer selectedBeer = (Beer)(beerList.getItemAtPosition(position));
+                        Beer selectedBeer = (Beer) (beerList.getItemAtPosition(position));
                         //System.out.println("beer id=" + selectedBeer.getId());
                         System.out.println("user selected=" + selectedBeer.getName());
                         Toast.makeText(DefaultEventAllBeers.this, "loading...", Toast.LENGTH_SHORT).show();
-                        Intent viewBeerProfile = new Intent(DefaultEventAllBeers.this,BeerProfile.class);
-                        viewBeerProfile.putExtra("beer",selectedBeer);
+                        Intent viewBeerProfile = new Intent(DefaultEventAllBeers.this, BeerProfile.class);
+                        viewBeerProfile.putExtra("beer", selectedBeer);
                         viewBeerProfile.putExtra("user", user);
                         startActivity(viewBeerProfile);
                         //really should be intent.putExtra("BeerID",selectedBeer.getId());
@@ -118,6 +116,84 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                 }
         );
 
+        Button allBeersButton = (Button)findViewById(R.id.allBeersButton);
+        allBeersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ListAdapter beerAdapter = new BeerRowAdapter(getApplicationContext(), beers, user);
+                final ListView beerList = (ListView)findViewById(R.id.beerList); //get reference to listview
+                beerList.setAdapter(beerAdapter);
+            }
+        });
+
+        Button favoriteBeersButton = (Button)findViewById(R.id.favoriteBeersButton);
+        favoriteBeersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ListAdapter beerAdapter = new BeerRowAdapter(getApplicationContext(), favoriteBeers, user);
+                final ListView beerList = (ListView)findViewById(R.id.beerList); //get reference to listview
+                beerList.setAdapter(beerAdapter);
+            }
+        });
+    }
+
+    public class MyReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // broadcast is detected
+            ((Button)findViewById(R.id.favoriteBeersButton)).setClickable(false);
+            ((Button)findViewById(R.id.allBeersButton)).setClickable(false);
+            int userId = intent.getIntExtra("userID", 0);
+            int beerId = intent.getIntExtra("beerID", 0);
+            boolean success = intent.getBooleanExtra("success", false);
+            boolean added = intent.getBooleanExtra("added", false);
+            if(success) {
+                if(added) {
+                    //Copy into favorited list
+                    for(Beer b : beers) {
+                        if(b.getId() == beerId) {
+                            b.setFavorited(true);
+                            favoriteBeers.add(b);
+                            break;
+                        }
+                    }
+                } else {
+                    for(Beer b : beers) {
+                        if(b.getId() == beerId) {
+                            b.setFavorited(false);
+                            favoriteBeers.remove(b);
+                            break;
+                        }
+                    }
+                }
+                Collections.sort(favoriteBeers);
+                Collections.sort(beers);
+            }
+            ((Button)findViewById(R.id.favoriteBeersButton)).setClickable(true);
+            ((Button)findViewById(R.id.allBeersButton)).setClickable(true);
+        }
+    }
+
+    private List<Beer> parseBeers(JSONObject startUpDataJSONObj, String param) throws JSONException {
+        JSONArray beersJSONArr = startUpDataJSONObj.getJSONArray(param);
+        List<Beer> tempBeers = new ArrayList<Beer>();
+        for(int i=0, len=beersJSONArr.length(); i<len; i++){
+            JSONObject beerObj = beersJSONArr.getJSONObject(i);
+            Beer beer = new Beer();
+            beer.setId(beerObj.getInt("beerID"));
+            beer.setName(beerObj.getString("beerName"));
+            beer.setBrewery(beerObj.getString("breweryName"));
+            beer.setBreweryLogoURL(beerObj.getString("logoUrl"));
+            beer.setType(beerObj.getString("beerType"));
+            beer.setAbv(beerObj.getString("beerABV"));
+            beer.setIbu(beerObj.getString("beerIBU"));
+            beer.setDescription(beerObj.getString("beerDescription"));
+            if(!beerObj.isNull("favorited")) {
+                beer.setFavorited(beerObj.getBoolean("favorited"));
+            }
+            tempBeers.add(beer);
+        }
+        return tempBeers;
     }
 
     @Override

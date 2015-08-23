@@ -54,7 +54,8 @@
             android:width="0dp"
             android:background="#FFA500"
             android:text="All Beers"
-            android:textColor="#ffffff" />
+            android:textColor="#ffffff"
+            android:onClick="onClick"/>
 
         <Button
             android:id="@+id/favoriteBeersButton"
@@ -65,7 +66,8 @@
             android:width="0dp"
             android:background="#FFA500"
             android:text="Favorite Beers"
-            android:textColor="#ffffff" />/>
+            android:textColor="#ffffff"
+            android:onClick="onClick"/>
 
     </LinearLayout>
 

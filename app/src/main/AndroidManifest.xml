@@ -44,6 +44,12 @@
             android:exported="true" >
         </service>
 
+        <service
+            android:name=".UpdateFavorites"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
+
         <activity
             android:name=".BeerProfile"
             android:label="@string/title_activity_beer_profile" >

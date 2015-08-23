@@ -1,6 +1,7 @@
 package com.iamhoppy.hoppy;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -20,6 +21,10 @@ import android.widget.ToggleButton;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -32,17 +37,19 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
     Context context;
     private HttpURLConnection urlConnection;
     URL url;
+    private User user;
 
-    BeerRowAdapter(Context context, List beers) {
+    BeerRowAdapter(Context context, List beers, User user) {
         super(context, R.layout.custom_beer_row, beers);
         this.context = context;
+        this.user = user;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inf = LayoutInflater.from(getContext());
         View customView = inf.inflate(R.layout.custom_beer_row, parent, false);
-        Beer singleBeerItem = getItem(position);
+        final Beer singleBeerItem = getItem(position);
         //Reference all views and perform event handling for each
         ImageView breweryLogo = (ImageView)customView.findViewById(R.id.breweryLogo);
         Picasso.with(context)
@@ -60,24 +67,22 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
         System.out.println("position=" + position + " singleBeerItem=" + singleBeerItem.getName());
 
         ToggleButton favoriteToggle = (ToggleButton)customView.findViewById(R.id.favoriteToggle);
+        if(singleBeerItem.isFavorited()) {
+            favoriteToggle.setChecked(true);
+        }
         favoriteToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {  // Toggle clicked
-                    try {
-                        Log.i(TAG, "Toggle to favorite!");
-                        url = new URL("http://45.58.38.34/toggleFavorite");
-                        //need to pass in user ID and beer ID
-                        //check if the beer was favorited for that individual
-                        urlConnection = (HttpURLConnection) url.openConnection();
-                        Log.i(TAG, "Connnection established!");
-                    } catch (IOException e) {
-                        Log.i(TAG, "URL Error");
-                    } finally {
-                        urlConnection.disconnect();
-                    }
-                } else {            // Toggle not clicked, no action?
+                final boolean isCheckedFinal = isChecked;
+                Intent updateIntent = new Intent(context, UpdateFavorites.class);
+                try {
+                    updateIntent.putExtra("userID", user.getId());
+                    updateIntent.putExtra("beerID", singleBeerItem.getId());
+                    updateIntent.putExtra("checkedFinal", isCheckedFinal);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+                getContext().getApplicationContext().startService(updateIntent);
             }
         });
 //        Rect delegateArea = new Rect();
@@ -115,8 +120,21 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
         if(singleBeerItem.getAbv() != null && singleBeerItem.getIbu() != null) {
             beerABVIBU.setText("ABV " + singleBeerItem.getAbv() + ", IBU " + singleBeerItem.getIbu());
         }
-        Log.i(TAG, singleBeerItem.toString());
 
         return customView;
+    }
+    private String readStream(InputStream is) {
+        try {
+            ByteArrayOutputStream bo = new ByteArrayOutputStream();
+            int i = is.read();
+            while(i != -1) {
+                bo.write(i);
+                i = is.read();
+            }
+            System.out.println(TAG+"bo=:"+bo);
+            return bo.toString();
+        } catch (IOException e) {
+            return "";
+        }
     }
 }
