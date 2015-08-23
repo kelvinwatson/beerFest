@@ -8,14 +8,10 @@
     android:measureWithLargestChild="false"
     android:descendantFocusability="blocksDescendants">
 
-    <TableRow
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:nestedScrollingEnabled="false"
-        android:weightSum="100"
-        android:paddingTop="10dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="10dp">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/breweryLogo"
@@ -44,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:text="beerName"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textSize="20sp" />
+                android:textSize="25sp" />
 
             <TextView
                 android:id="@+id/breweryName"
@@ -84,16 +80,22 @@
                 android:id="@+id/score"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="98.5%"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:text="4.2"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#FFA500"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal" />
 
-            <ToggleButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="favorited"
-                android:id="@+id/favoriteToggle"
-                android:checked="false" />
+            <ToggleButton android:id="@+id/favoriteToggle"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:textOn=""
+                android:textOff=""
+                android:background="@drawable/toggle"
+                android:checked="false"
+                android:layout_gravity="bottom" />
         </LinearLayout>
-    </TableRow>
+    </LinearLayout>
 
 </TableLayout>

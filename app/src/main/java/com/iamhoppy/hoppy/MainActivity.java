@@ -101,8 +101,6 @@ public class MainActivity extends AppCompatActivity {
             };
             profileTracker.startTracking();
 
-
-
             loginButton.setReadPermissions("public_profile", "email", "user_friends");
 
             loginButton.setOnClickListener(new View.OnClickListener() {

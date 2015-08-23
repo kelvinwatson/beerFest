@@ -35,6 +35,11 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     public String jsonResponse;
     private List<Beer> beers = new ArrayList<Beer>();
     private List<Event> events = new ArrayList<Event>();
+    private User user = new User();
+
+    @Override
+    public void onBackPressed() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,16 +47,16 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         setContentView(R.layout.activity_default_event_all_beer);
 
         //Get default event & beer data, parse, and save data
-        Bundle bundle = getIntent().getExtras();
+        final Bundle bundle = getIntent().getExtras();
         String defaultEventBeerData = bundle.getString("DefaultEventBeerData");
         try {
-            JSONObject eventBeersJSONObj = new JSONObject(defaultEventBeerData);
+            JSONObject startUpDataJSONObj = new JSONObject(defaultEventBeerData);
 
-            JSONArray beersJSONArr = eventBeersJSONObj.getJSONArray("beers");
+            JSONArray beersJSONArr = startUpDataJSONObj.getJSONArray("beers");
             for(int i=0, len=beersJSONArr.length(); i<len; i++){
                 JSONObject beerObj = beersJSONArr.getJSONObject(i);
                 Beer beer = new Beer();
-                //beer.setId(beerObj.getInt("beerID"));
+                beer.setId(beerObj.getInt("beerID"));
                 beer.setName(beerObj.getString("beerName"));
                 beer.setBrewery(beerObj.getString("breweryName"));
                 beer.setBreweryLogoURL(beerObj.getString("logoUrl"));
@@ -59,23 +64,24 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                 beer.setAbv(beerObj.getString("beerABV"));
                 beer.setIbu(beerObj.getString("beerIBU"));
                 beer.setDescription(beerObj.getString("beerDescription"));
-                System.out.println("beerObjectName=" + beer.getName());
                 beers.add(beer);
             }
 
-            System.out.println("Do I get here???");
-            JSONArray eventsJSONArr = eventBeersJSONObj.getJSONArray("events");
+            JSONArray eventsJSONArr = startUpDataJSONObj.getJSONArray("events");
             System.out.println("eventsJSONArr="+eventsJSONArr.toString());
             for(int i=0, len=eventsJSONArr.length(); i<len; i++){
                 JSONObject eventObj = eventsJSONArr.getJSONObject(i);
-                System.out.println("len=" + len + "eventObj.toString=" + eventObj.toString());
                 Event event = new Event();
                 event.setName(eventObj.getString("eventName"));
                 event.setDate(eventObj.getString("eventDate"));
                 event.setLogoURL(eventObj.getString("logoUrl"));
-                System.out.println("eventLogo=" + event.getLogoURL());
                 events.add(event);
             }
+            JSONObject userJSONObj = startUpDataJSONObj.getJSONObject("user");
+            user.setFacebookCredential(userJSONObj.getString("facebookCredential"));
+            user.setFirstName(userJSONObj.getString("firstName"));
+            user.setLastName(userJSONObj.getString("lastName"));
+            user.setId(userJSONObj.getInt("id"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -104,7 +110,8 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                         System.out.println("user selected=" + selectedBeer.getName());
                         Toast.makeText(DefaultEventAllBeers.this, "loading...", Toast.LENGTH_SHORT).show();
                         Intent viewBeerProfile = new Intent(DefaultEventAllBeers.this,BeerProfile.class);
-                        //intent.putExtra("BeerName",selectedBeer.getName());
+                        viewBeerProfile.putExtra("beer",selectedBeer);
+                        viewBeerProfile.putExtra("user", user);
                         startActivity(viewBeerProfile);
                         //really should be intent.putExtra("BeerID",selectedBeer.getId());
                     }

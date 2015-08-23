@@ -39,7 +39,8 @@ class EventSpinnerAdapter extends ArrayAdapter<Event> {
         ImageView eventLogo = (ImageView)customView.findViewById(R.id.eventLogo);
         Picasso.with(context)
                 .load(singleEventItem.getLogoURL())
-                .resize(80, 80)
+                .fit()
+                .centerInside()
                 .into(eventLogo);
 
         TextView eventName = (TextView)customView.findViewById(R.id.eventName);

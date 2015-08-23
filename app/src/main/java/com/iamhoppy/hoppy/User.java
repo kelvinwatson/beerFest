@@ -1,9 +1,11 @@
 package com.iamhoppy.hoppy;
 
+import java.io.Serializable;
+
 /**
  * Created by Bryce on 8/22/2015.
  */
-public class User {
+public class User implements Serializable{
     private int id;
 
     public String getFirstName() {

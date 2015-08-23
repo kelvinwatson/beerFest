@@ -3,6 +3,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="1">
+    <LinearLayout
+        android:id="@+id/row1"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:orientation="vertical"
+        android:background="#FFA500"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/logo2"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/logo2"
+            android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
 
     <Spinner
         android:id="@+id/eventSpinner"
