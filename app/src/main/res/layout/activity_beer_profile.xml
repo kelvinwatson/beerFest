@@ -1,129 +1,187 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/cleanAndClear"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
-    <TableLayout
+    <LinearLayout
+        android:id="@+id/row1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:stretchColumns="2"
-        android:weightSum="100">
+        android:layout_height="65dp"
+        android:background="#FFA500"
+        android:orientation="vertical"
+        android:weightSum="1">
 
-        <TableRow
+        <ImageView
+            android:id="@+id/logo2"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/logo2" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/row1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/breweryLogo"
+            android:layout_width="0dp"
+            android:layout_height="125dp"
+            android:layout_weight="0.4"
+            android:background="#000000"
+            android:minHeight="100dp"
+            android:minWidth="100dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="0.6"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/beerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="beerName"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/breweryName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="breweryName"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/beerABVIBU"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/row3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/beerDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="3dp"
+            android:layout_weight="1"
+            android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum." />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/row4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/rateThisBeer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.5"
+            android:elegantTextHeight="false"
+            android:text="How was it?"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/ratingImg1"
                 android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_weight="25"
-                android:background="#000000"
-                android:nestedScrollingEnabled="false" />
+                android:layout_height="50dp"
+                android:layout_weight="0.2"
+                android:layout_margin="5dp"
+                android:background="#006699" />
 
-            <LinearLayout
+            <ImageView
+                android:id="@+id/ratingImg2"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_weight="50"
-                android:orientation="vertical">
+                android:layout_height="50dp"
+                android:layout_weight="0.2"
+                android:layout_margin="5dp"
+                android:background="#006699" />
 
-                <TextView
-                    android:id="@+id/beerName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="beerName"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                <TextView
-                    android:id="@+id/Brewery"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="breweryName"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                <TextView
-                    android:id="@+id/ABVIBU"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="ABV,IBU"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
-
-            </LinearLayout>
-
-            <!--<item
-                android:id="@+id/shareAction"
-                android:orderInCategory="100"
-                android:showAsAction="ifRoom"
-                android:actionProviderClass="android.support.v7.widget.ShareActionProvider"
+            <ImageView
+                android:id="@+id/ratingImg3"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="30"
-                android:text="1" />-->
+                android:layout_height="50dp"
+                android:layout_weight="0.2"
+                android:layout_margin="5dp"
+                android:background="#006699" />
 
-        </TableRow>
+            <ImageView
+                android:id="@+id/ratingImg4"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="0.2"
+                android:layout_margin="5dp"
+                android:background="#006699" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/ratingImg5"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="0.2"
+                android:layout_margin="5dp"
+                android:background="#006699" />
+        </LinearLayout>
 
-            <TextView
-                android:id="@+id/beerDescriptionHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Description"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
 
-        </TableRow>
+    <LinearLayout
+        android:id="@+id/row6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.75"
+            android:ems="10"
+            android:inputType="textMultiLine"
+            android:lines="3" />
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_span="3"
-                android:layout_weight="1"
-                android:text="beerDescription" />
-        </TableRow>
+        <Button
+            android:id="@+id/button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_weight="0.25"
+            android:text="Post" />
+    </LinearLayout>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="Rate this Beer"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <RatingBar
-                android:id="@+id/ratingBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:numStars="5"
-                android:stepSize="1.0" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"></TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"></TableRow>
-    </TableLayout>
-
-    <WebView
-        android:id="@+id/webView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 
 </LinearLayout>

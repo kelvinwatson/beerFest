@@ -1,8 +1,10 @@
 package com.iamhoppy.hoppy;
 
+import java.io.Serializable;
+
 /* Beer class
  */
-public class Beer {
+public class Beer implements Serializable {
     private int id;
     private String name;
     private String type;

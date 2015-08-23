@@ -2,9 +2,11 @@ package com.iamhoppy.hoppy;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.view.LayoutInflater;
+import android.view.TouchDelegate;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -45,7 +47,8 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
         ImageView breweryLogo = (ImageView)customView.findViewById(R.id.breweryLogo);
         Picasso.with(context)
                 .load(singleBeerItem.getBreweryLogoURL())
-                .resize(80, 80) // here you resize your image to whatever width and height you like
+                .fit()
+                .centerInside()
                 .into(breweryLogo);
 
         TextView beerName = (TextView)customView.findViewById(R.id.beerName);
@@ -54,29 +57,38 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
         TextView beerABVIBU = (TextView)customView.findViewById(R.id.beerABVIBU);
         TextView score = (TextView)customView.findViewById(R.id.score);
 
-        System.out.println("position="+position+" singleBeerItem="+singleBeerItem.getName());
+        System.out.println("position=" + position + " singleBeerItem=" + singleBeerItem.getName());
 
         ToggleButton favoriteToggle = (ToggleButton)customView.findViewById(R.id.favoriteToggle);
         favoriteToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {  // Toggle clicked
-                    try{
+                    try {
                         Log.i(TAG, "Toggle to favorite!");
                         url = new URL("http://45.58.38.34/toggleFavorite");
                         //need to pass in user ID and beer ID
                         //check if the beer was favorited for that individual
                         urlConnection = (HttpURLConnection) url.openConnection();
                         Log.i(TAG, "Connnection established!");
-                    } catch(IOException e){
+                    } catch (IOException e) {
                         Log.i(TAG, "URL Error");
-                    } finally{
+                    } finally {
                         urlConnection.disconnect();
                     }
-                } else{            // Toggle not clicked, no action?
+                } else {            // Toggle not clicked, no action?
                 }
             }
         });
+//        Rect delegateArea = new Rect();
+//        favoriteToggle.getHitRect(delegateArea);
+//        delegateArea.right += 100;
+//        delegateArea.left += 100;
+//        delegateArea.top += 50;
+//        delegateArea.bottom += 50;
+//        TouchDelegate touchDelegate = new TouchDelegate(delegateArea, favoriteToggle);
+//
+//        ((View) favoriteToggle.getParent()).setTouchDelegate(touchDelegate);
 
         //deal with image view
 
@@ -100,7 +112,9 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
         beerName.setText(singleBeerItem.getName());
         breweryName.setText(singleBeerItem.getBrewery());
         beerType.setText(singleBeerItem.getType());
-        beerABVIBU.setText("ABV "+singleBeerItem.getAbv() + ", IBU " +singleBeerItem.getIbu());
+        if(singleBeerItem.getAbv() != null && singleBeerItem.getIbu() != null) {
+            beerABVIBU.setText("ABV " + singleBeerItem.getAbv() + ", IBU " + singleBeerItem.getIbu());
+        }
         Log.i(TAG, singleBeerItem.toString());
 
         return customView;

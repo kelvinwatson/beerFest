@@ -9,4 +9,5 @@
     <string name="beer_fest_tracker">Beer Fest Tracker</string>
     <string name="hoppy_logo">hoppyLogo</string>
     <string name="title_activity_beer_profile">BeerProfile</string>
+    <string name="appTitle">Hoppy</string>
 </resources>

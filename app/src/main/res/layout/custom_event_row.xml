@@ -24,7 +24,8 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView android:id="@+id/eventDetails"
-        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/eventName"
         android:layout_marginLeft="5dip"
         android:layout_toRightOf="@+id/eventLogo"
