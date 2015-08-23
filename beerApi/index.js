@@ -71,7 +71,7 @@ function setFavorites(reqData, callback) {
 }
 
 function getAllEvents(callback) {
-	var selectAllEvents = "SELECT id, name AS eventName, DATE_FORMAT(event_date,'%W, %M %D, %Y') AS eventDate, logo_url AS logoUrl FROM events WHERE event_date>CURDATE();";
+	var selectAllEvents = "SELECT id, name AS eventName, DATE_FORMAT(event_date,'%W, %M %D, %Y') AS eventDate, logo_url AS logoUrl FROM events WHERE event_date>CURDATE() ORDER BY eventDate ASC;";
 	con.query(selectAllEvents, function(err, rows, fields) {
 		if (err) {
 			callback(false);
@@ -101,6 +101,18 @@ function getBeersForEvent(eventId, callback) {
 	});
 }
 
+function matchFavoriteBeers(beers, favorites) {
+	console.log(favorites);
+	for(var i=0; i<favorites.length; i++) {
+		for(var x=0; x<beers.length; x++) {
+			if(favorites[i].beerID === beers[x].beerID) {
+				beers[x].favorited = true;
+			}
+		}
+	}
+	return beers;
+}
+
 app.get('/startUp/:firstName/:lastName/:facebookCredential', function (req, res) {
 	var firstName = req.params.firstName;
 	var lastName = req.params.lastName;
@@ -114,17 +126,17 @@ app.get('/startUp/:firstName/:lastName/:facebookCredential', function (req, res)
 			if(success) {
 				console.log(rows);
 				userId = rows[0].id;
-				var beers = [];
-				var events = [];
 				response.user = rows[0];
-				getDefaultEvent(function(success, rows) {
+				getAllEvents(function(success, rows) {
 					var eventId = rows[0].id;
-					response.event = rows[0];
+					response.events = rows;
 					getBeersForEvent(eventId, function(success, rows) {
 						if(success) {
-							response.beers = rows;
+							var beers = rows;
 							getFavoriteBeers(eventId, userId, function(success, rows) {
-								response.favoriteBeers = rows;
+								var favoriteBeers = rows;
+								response.beers = matchFavoriteBeers(beers, favoriteBeers);
+								response.favorites = favoriteBeers;
 								response.success = success;
 								res.setHeader('Content-Type', 'application/json');
 								res.send(JSON.stringify(response));
