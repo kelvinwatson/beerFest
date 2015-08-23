@@ -13,12 +13,11 @@
         android:id="@+id/hoppylogo"
         android:layout_width="320dp"
         android:layout_height="320dp"
+        android:contentDescription="@string/hoppy_logo"
+        android:src="@drawable/logo"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginBottom="45dp"
-        android:contentDescription="@string/hoppy_logo"
-        android:src="@drawable/logo" />
+        android:layout_marginTop="43dp" />
 
     <ProgressBar
         android:id="@+id/progressBar"
