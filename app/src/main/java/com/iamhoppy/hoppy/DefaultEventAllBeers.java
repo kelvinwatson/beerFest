@@ -54,6 +54,10 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         IntentFilter filter = new IntentFilter("com.iamhoppy.hoppy.favoriteDone");
         MyReceiver receiver = new MyReceiver();
         registerReceiver(receiver, filter);
+        //Receiver for UpdateReview Service
+        IntentFilter reviewFilter = new IntentFilter("com.iamhoppy.hoppy.reviewDone");
+        ReviewReceiver reviewReceiver = new ReviewReceiver();
+        registerReceiver(reviewReceiver, reviewFilter);
         //Get default event & beer data, parse, and save data
         final Bundle bundle = getIntent().getExtras();
         String defaultEventBeerData = bundle.getString("DefaultEventBeerData");
@@ -135,6 +139,25 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                 beerList.setAdapter(beerAdapter);
             }
         });
+    }
+
+    public class ReviewReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int userId = intent.getIntExtra("userID", 0);
+            int beerId = intent.getIntExtra("beerID", 0);
+            int rating = intent.getIntExtra("rating", 0);
+            String comment = intent.getStringExtra("comment");
+            boolean success = intent.getBooleanExtra("success", false);
+            if(success) {
+                for(Beer beer : beers) {
+                    if(beer.getId() == beerId) {
+                        beer.setRating(rating);
+                        beer.setComment(comment);
+                    }
+                }
+            }
+        }
     }
 
     public class MyReceiver extends BroadcastReceiver {

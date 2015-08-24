@@ -10,10 +10,12 @@ public class Beer implements Serializable, Comparable {
     private String type;
     private String ibu;
     private String abv;
-    private double rating;
+    private double rating = -1.0;
+    private double averageRating;
     private String brewery;
     private String breweryLogoURL;
     private String description;
+    private String comment;
     private boolean favorited;
 
     public int getId() {
@@ -96,8 +98,24 @@ public class Beer implements Serializable, Comparable {
         this.favorited = favorited;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     @Override
     public int compareTo(Object another) {
         return this.name.compareTo(((Beer) another).getName());
+    }
+
+    public double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(double averageRating) {
+        this.averageRating = averageRating;
     }
 }

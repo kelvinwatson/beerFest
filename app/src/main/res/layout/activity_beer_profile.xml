@@ -37,7 +37,7 @@
             android:layout_weight="0.4"
             android:background="@android:color/transparent"
             android:minHeight="100dp"
-            android:minWidth="100dp" />
+            android:minWidth="100dp"/>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -121,7 +121,8 @@
                 android:layout_weight="0.2"
                 android:layout_margin="5dp"
                 android:background="@android:color/transparent"
-                android:src="@drawable/rate1" />
+                android:src="@drawable/rate1"
+                android:onClick="onClick"/>
 
             <ImageView
                 android:id="@+id/ratingImg2"
@@ -130,7 +131,8 @@
                 android:layout_weight="0.2"
                 android:layout_margin="5dp"
                 android:src="@drawable/rate2"
-                android:background="@android:color/transparent"/>
+                android:background="@android:color/transparent"
+                android:onClick="onClick"/>
 
             <ImageView
                 android:id="@+id/ratingImg3"
@@ -139,7 +141,8 @@
                 android:layout_weight="0.2"
                 android:layout_margin="5dp"
                 android:src="@drawable/rate3"
-                android:background="@android:color/transparent" />
+                android:background="@android:color/transparent"
+                android:onClick="onClick"/>
 
             <ImageView
                 android:id="@+id/ratingImg4"
@@ -148,7 +151,8 @@
                 android:layout_weight="0.2"
                 android:layout_margin="5dp"
                 android:src="@drawable/rate4"
-                android:background="@android:color/transparent" />
+                android:background="@android:color/transparent"
+                android:onClick="onClick"/>
 
             <ImageView
                 android:id="@+id/ratingImg5"
@@ -157,7 +161,8 @@
                 android:layout_weight="0.2"
                 android:layout_margin="5dp"
                 android:src="@drawable/rate5"
-                android:background="@android:color/transparent" />
+                android:background="@android:color/transparent"
+                android:onClick="onClick"/>
         </LinearLayout>
 
         <LinearLayout
