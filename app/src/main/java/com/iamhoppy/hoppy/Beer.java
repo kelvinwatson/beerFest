@@ -1,6 +1,7 @@
 package com.iamhoppy.hoppy;
 
 import java.io.Serializable;
+import java.util.List;
 
 /* Beer class
  */
@@ -10,13 +11,22 @@ public class Beer implements Serializable, Comparable {
     private String type;
     private String ibu;
     private String abv;
-    private double rating = -1.0;
+    private double rating;
     private double averageRating;
     private String brewery;
     private String breweryLogoURL;
     private String description;
-    private String comment;
-    private boolean favorited;
+    private String comment = null;
+    private boolean favorited=false;
+    private List<String> comments=null;
+
+    public List<String> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<String> comments) {
+        this.comments = comments;
+    }
 
     public int getId() {
         return id;

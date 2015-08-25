@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     public class MyReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // broadcast is detected
+            // broadcast is detected from FetchDefaultEventAllBeers class
             defaultEventBeerData = intent.getStringExtra("DefaultEventBeerData");
             Intent loginIntent = new Intent(MainActivity.this, DefaultEventAllBeers.class);
             loginIntent.putExtra("DefaultEventBeerData", defaultEventBeerData);

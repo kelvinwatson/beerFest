@@ -1,11 +1,13 @@
 package com.iamhoppy.hoppy;
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -52,21 +54,21 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         setContentView(R.layout.activity_default_event_all_beer);
         //Receiver for UpdateFavorites Service
         IntentFilter filter = new IntentFilter("com.iamhoppy.hoppy.favoriteDone");
-        MyReceiver receiver = new MyReceiver();
-        registerReceiver(receiver, filter);
+        FavoriteReceiver favoriteReceiver = new FavoriteReceiver();
+        registerReceiver(favoriteReceiver, filter);
         //Receiver for UpdateReview Service
         IntentFilter reviewFilter = new IntentFilter("com.iamhoppy.hoppy.reviewDone");
         ReviewReceiver reviewReceiver = new ReviewReceiver();
         registerReceiver(reviewReceiver, reviewFilter);
-        //Get default event & beer data, parse, and save data
+
+        //Get default event & beer data from MainActivity, parse, and save data
         final Bundle bundle = getIntent().getExtras();
         String defaultEventBeerData = bundle.getString("DefaultEventBeerData");
+        //System.out.println(defaultEventBeerData);
         try {
             JSONObject startUpDataJSONObj = new JSONObject(defaultEventBeerData);
-
             beers = parseBeers(startUpDataJSONObj, "beers");
             favoriteBeers = parseBeers(startUpDataJSONObj, "favorites");
-
             JSONArray eventsJSONArr = startUpDataJSONObj.getJSONArray("events");
             System.out.println("eventsJSONArr="+eventsJSONArr.toString());
             for(int i=0, len=eventsJSONArr.length(); i<len; i++){
@@ -107,7 +109,7 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         //String selectedBeer = String.valueOf(parent.getItemAtPosition(position));
-                        Beer selectedBeer = (Beer) (beerList.getItemAtPosition(position));
+                        Beer selectedBeer = (Beer)(beerList.getItemAtPosition(position));
                         //System.out.println("beer id=" + selectedBeer.getId());
                         System.out.println("user selected=" + selectedBeer.getName());
                         Toast.makeText(DefaultEventAllBeers.this, "loading...", Toast.LENGTH_SHORT).show();
@@ -146,7 +148,7 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             int userId = intent.getIntExtra("userID", 0);
             int beerId = intent.getIntExtra("beerID", 0);
-            int rating = intent.getIntExtra("rating", 0);
+            double rating = intent.getDoubleExtra("rating", 0.0);
             String comment = intent.getStringExtra("comment");
             boolean success = intent.getBooleanExtra("success", false);
             if(success) {
@@ -156,11 +158,17 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                         beer.setComment(comment);
                     }
                 }
+                for(Beer beer : favoriteBeers) {
+                    if(beer.getId() == beerId) {
+                        beer.setRating(rating);
+                        beer.setComment(comment);
+                    }
+                }
             }
         }
     }
 
-    public class MyReceiver extends BroadcastReceiver {
+    public class FavoriteReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             // broadcast is detected
@@ -172,7 +180,6 @@ public class DefaultEventAllBeers extends AppCompatActivity {
             boolean added = intent.getBooleanExtra("added", false);
             if(success) {
                 if(added) {
-                    //Copy into favorited list
                     for(Beer b : beers) {
                         if(b.getId() == beerId) {
                             b.setFavorited(true);
@@ -197,23 +204,64 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         }
     }
 
+
+    /*
+
+    private boolean favorited;
+    private List<String> allComments;
+     */
     private List<Beer> parseBeers(JSONObject startUpDataJSONObj, String param) throws JSONException {
+        System.out.println("in parse beers");
         JSONArray beersJSONArr = startUpDataJSONObj.getJSONArray(param);
+        System.out.println("beersJSONArr="+beersJSONArr.toString());
         List<Beer> tempBeers = new ArrayList<Beer>();
-        for(int i=0, len=beersJSONArr.length(); i<len; i++){
+        for(int i=0, len=beersJSONArr.length(); i<len; i++) {
             JSONObject beerObj = beersJSONArr.getJSONObject(i);
             Beer beer = new Beer();
-            beer.setId(beerObj.getInt("beerID"));
-            beer.setName(beerObj.getString("beerName"));
-            beer.setBrewery(beerObj.getString("breweryName"));
-            beer.setBreweryLogoURL(beerObj.getString("logoUrl"));
-            beer.setType(beerObj.getString("beerType"));
-            beer.setAbv(beerObj.getString("beerABV"));
-            beer.setIbu(beerObj.getString("beerIBU"));
-            beer.setDescription(beerObj.getString("beerDescription"));
-            if(!beerObj.isNull("favorited")) {
-                beer.setFavorited(beerObj.getBoolean("favorited"));
+            if (beerObj.has("beerID") && !beerObj.isNull("beerID")) {
+                beer.setId(beerObj.getInt("beerID"));
             }
+            if (beerObj.has("beerName") && !beerObj.isNull("beerName")) {
+                beer.setName(beerObj.getString("beerName"));
+            }
+            if (beerObj.has("beerType") && !beerObj.isNull("beerType")){
+                beer.setType(beerObj.getString("beerType"));
+            }
+            if(beerObj.has("beerIBU") && !beerObj.isNull("beerIBU")) {
+                beer.setIbu(beerObj.getString("beerIBU"));
+            }
+            if(beerObj.has("beerABV") && !beerObj.isNull("beerABV")) {
+                beer.setAbv(beerObj.getString("beerABV"));
+            }
+            if(beerObj.has("myRating")){
+                System.out.println("this beer has a rating!");
+                beer.setRating(beerObj.getDouble("myRating"));
+            }
+            if(beerObj.has("breweryName") && !beerObj.isNull("breweryName")) {
+                beer.setBrewery(beerObj.getString("breweryName"));
+            }
+            if(beerObj.has("logoUrl") && !beerObj.isNull("logoUrl")) {
+                beer.setBreweryLogoURL(beerObj.getString("logoUrl"));
+            }
+            if(beerObj.has("beerDescription") && !beerObj.isNull("beerDescription")) {
+                beer.setDescription(beerObj.getString("beerDescription"));
+            }
+            if(beerObj.has("myComment") && beerObj.getString("myComment").equals("NULL")){
+                System.out.println("this beer has myComment!");
+                beer.setComment(beerObj.getString("myComment"));
+            } //else leave as default null value
+            if(beerObj.has("favorited") && !beerObj.isNull("favorited")) { //checks if value exists or is null
+                beer.setFavorited(beerObj.getBoolean("favorited"));
+            } //else leave as default false
+            if(beerObj.has("comments") && !beerObj.isNull("comments")){
+                JSONArray arr = beerObj.getJSONArray("comments"); //This line causes exception
+                List<String> tempComments = new ArrayList<String>();
+                for(int j=0, arrLen=arr.length(); j<arrLen; j++){
+                    tempComments.add(arr.getString(j));
+                }
+                beer.setComments(tempComments);
+            }
+            System.out.println("testing printing the new beer object"+beer.toString());
             tempBeers.add(beer);
         }
         return tempBeers;
@@ -224,7 +272,7 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         super.onResume();
         // Logs 'install' and 'app activate' App Events.
         AppEventsLogger.activateApp(this);
-    }
+        }
 
     @Override
     protected void onPause() {

@@ -23,9 +23,9 @@ public class UpdateReview extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         final int userID = intent.getIntExtra("userID", 0);
         final int beerID = intent.getIntExtra("beerID", 0);
-        final int rating = (int)intent.getDoubleExtra("rating", 0);
+        final double rating = intent.getDoubleExtra("rating", 0.0);
         final String comment = intent.getStringExtra("comment");
-        Log.i(TAG, "IN SERVICE");
+        Log.i(TAG, "IN REVIEWS SERVICE");
         Thread thread = new Thread(new Runnable(){
             @Override
             public void run() {
@@ -47,7 +47,6 @@ public class UpdateReview extends Service {
                         sendBroadcast(intent);
                     }
                     Log.i(TAG, "RESPONSE: " + response);
-
                     Log.i(TAG, "Connnection established!  http://45.58.38.34/addReview/" + userID + "/" + beerID + "/" + rating + "/" + comment);
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage());

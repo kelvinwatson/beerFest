@@ -86,7 +86,7 @@
             android:layout_marginBottom="3dp"
             android:layout_marginTop="3dp"
             android:layout_weight="1"
-            android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum." />
+            android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s" />
 
     </LinearLayout>
 
@@ -230,7 +230,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/row6"
+        android:id="@+id/postInitialCommentRow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -238,16 +238,16 @@
         android:weightSum="1">
 
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/commentTextBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.75"
             android:ems="10"
             android:inputType="textMultiLine"
-            android:lines="3" />
+            android:lines="2" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/postCommentButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -255,5 +255,20 @@
             android:text="Post" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/commentsSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/comments"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </LinearLayout>
 
 </LinearLayout>

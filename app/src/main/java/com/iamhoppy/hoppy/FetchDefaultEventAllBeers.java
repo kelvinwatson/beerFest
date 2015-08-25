@@ -49,7 +49,6 @@ public class FetchDefaultEventAllBeers extends Service {
                     intent.setAction("com.iamhoppy.hoppy.beers");
                     intent.putExtra("DefaultEventBeerData", beerData);
                     sendBroadcast(intent);
-
                 }catch(IOException e){
                     Log.i(TAG, "Read error");
                 }finally{
@@ -70,7 +69,7 @@ public class FetchDefaultEventAllBeers extends Service {
                 bo.write(i);
                 i = is.read();
             }
-            System.out.println(TAG+"bo=:"+bo);
+            System.out.println(TAG+bo);
             return bo.toString();
         } catch (IOException e) {
             return "";

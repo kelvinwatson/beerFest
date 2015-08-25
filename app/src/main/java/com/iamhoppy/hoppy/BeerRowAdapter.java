@@ -85,34 +85,7 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
                 getContext().getApplicationContext().startService(updateIntent);
             }
         });
-//        Rect delegateArea = new Rect();
-//        favoriteToggle.getHitRect(delegateArea);
-//        delegateArea.right += 100;
-//        delegateArea.left += 100;
-//        delegateArea.top += 50;
-//        delegateArea.bottom += 50;
-//        TouchDelegate touchDelegate = new TouchDelegate(delegateArea, favoriteToggle);
-//
-//        ((View) favoriteToggle.getParent()).setTouchDelegate(touchDelegate);
 
-        //deal with image view
-
-
-        /*
-        try{
-            URL logoURL = new URL(singleBeerItem.getBreweryLogoURL());
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 8;
-            InputStream is = logoURL.openConnection().getInputStream();
-            Bitmap preview_bitmap = BitmapFactory.decodeStream(is, null, options);
-            //i.setImageDrawable(d);
-        }catch(MalformedURLException e){
-            System.out.println("111HAHA ERROR Error!111");
-            e.printStackTrace();
-        }catch(IOException e){
-            System.out.println("222HAHA ERROR Error!222");
-            e.printStackTrace();
-        }*/
         breweryLogo.setImageResource(R.drawable.alameda);
         beerName.setText(singleBeerItem.getName());
         breweryName.setText(singleBeerItem.getBrewery());

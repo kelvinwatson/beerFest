@@ -50,7 +50,6 @@ public class UpdateFavorites extends Service {
                         sendBroadcast(intent);
                     }
                     Log.i(TAG, "RESPONSE: " + response);
-
                     Log.i(TAG, "Connnection established!  http://45.58.38.34/addFavorites/" + userID + "/" + beerID);
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage());
