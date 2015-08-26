@@ -10,4 +10,11 @@
     <string name="hoppy_logo">hoppyLogo</string>
     <string name="title_activity_beer_profile">BeerProfile</string>
     <string name="appTitle">Hoppy</string>
+    <string name="post_button_text">Post</string>
+    <string name="r5">5</string>
+    <string name="r4">4</string>
+    <string name="r3">3</string>
+    <string name="r2">2</string>
+    <string name="r1">1</string>
+    <string name="what_did_you_think">What did you think?</string>
 </resources>

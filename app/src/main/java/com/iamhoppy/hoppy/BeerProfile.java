@@ -129,12 +129,11 @@ public class BeerProfile extends AppCompatActivity {
 
         //define layout params
         LinearLayout.LayoutParams fullWidthText = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT,1f);
-        fullWidthText.setMargins(0,5,0,0);
+        fullWidthText.setMargins(10,5,10,0);
         LinearLayout.LayoutParams halfWidth = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT,0.5f);
-        halfWidth.setMargins(0,5,0,0);
+        halfWidth.setMargins(10,5,10,0);
         LinearLayout.LayoutParams horizontalRuleParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,1);
-        horizontalRuleParam.setMargins(0,5,0,0);
-
+        horizontalRuleParam.setMargins(10,5,10,0);
 
         //loop through display other users' comments array and user firstName and lastInitial
         List<String> comments = beer.getComments();
@@ -155,13 +154,16 @@ public class BeerProfile extends AppCompatActivity {
             }
             String pComment = sBuilder.toString();
 
-            //generate views
             //generate and display horizontal rule
-            View horizontalRule = new View(this);
-            horizontalRule.setLayoutParams(horizontalRuleParam);
-            horizontalRule.setId(99 - i);
-            horizontalRule.setBackgroundColor(Color.parseColor("#B3B3B3"));
+            if(i!=1) {
+                View horizontalRule = new View(this);
+                horizontalRule.setLayoutParams(horizontalRuleParam);
+                horizontalRule.setId(99 - i);
+                horizontalRule.setBackgroundColor(Color.parseColor("#B3B3B3"));
+                othersCommentsRow.addView(horizontalRule);
+            }
 
+            //generate views
             TextView nameView = new TextView(this);
             nameView.setLayoutParams(halfWidth);
 
@@ -174,7 +176,7 @@ public class BeerProfile extends AppCompatActivity {
             timeView.setLayoutParams(halfWidth);
             timeView.setGravity(Gravity.RIGHT);
             timeView.setText(pTime);
-            timeView.setTextSize(15);
+            timeView.setTextSize(10);
 
             TextView commentView = new TextView(this);
             commentView.setLayoutParams(fullWidthText);
@@ -182,14 +184,13 @@ public class BeerProfile extends AppCompatActivity {
             commentView.setTypeface(null, Typeface.ITALIC);
             commentView.setTextSize(15);
             commentView.setTextColor(Color.parseColor("#000000"));
-            commentView.setBackgroundColor(Color.parseColor("#E0FFFF"));
+            //commentView.setBackgroundColor(Color.parseColor("#E0FFFF"));
 
             //generate new horizontal layout for name and timeStamp and specify params
             LinearLayout hLL = new LinearLayout(getApplicationContext());
             hLL.setOrientation(LinearLayout.HORIZONTAL);
 
             //add created views
-            othersCommentsRow.addView(horizontalRule);
             hLL.addView(nameView);
             hLL.addView(timeView);
             othersCommentsRow.addView(hLL);
@@ -205,13 +206,13 @@ public class BeerProfile extends AppCompatActivity {
         myCommentRow = (LinearLayout)findViewById(R.id.myCommentRow);
         //specify layout parameters for vertical layout
         LinearLayout.LayoutParams fullWidth = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT,1f);
-
+        fullWidth.setMargins(10,5,10,0);
         //create new horizontal layout for name and timeStamp and specify params
         LinearLayout horizontalForNameTime = new LinearLayout(getApplicationContext());
         horizontalForNameTime.setOrientation(LinearLayout.HORIZONTAL);
         //horizontalLayout set weightSum
         LinearLayout.LayoutParams halfWidth = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT,0.5f);
-
+        halfWidth.setMargins(10,5,10,0);
         //split fullComment into name and comment http://stackoverflow.com/questions/3451903/extracting-substring-by-lines
         String[] commentLines = beer.getMyComment().split(System.getProperty("line.separator"));
         String parsedUserName = commentLines[0];
@@ -238,7 +239,7 @@ public class BeerProfile extends AppCompatActivity {
         timeView.setLayoutParams(halfWidth);
         timeView.setText(parsedTime);
         timeView.setGravity(Gravity.RIGHT);
-        timeView.setTextSize(15);
+        timeView.setTextSize(10);
 
         editableCommentView = new TextView(this);
         editableCommentView.setLayoutParams(fullWidth);

@@ -41,7 +41,8 @@
                 android:layout_weight="0.4"
                 android:background="@android:color/transparent"
                 android:minHeight="100dp"
-                android:minWidth="100dp" />
+                android:minWidth="100dp"
+                android:layout_marginLeft="10dp" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -91,28 +92,45 @@
                 android:layout_marginBottom="3dp"
                 android:layout_marginTop="3dp"
                 android:layout_weight="1"
-                android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s" />
+                android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/row4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:orientation="vertical"
-            android:weightSum="1">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
 
             <TextView
                 android:id="@+id/rateThisBeer"
                 style="@style/beerProfileHeaderText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="0.5"
                 android:elegantTextHeight="false"
                 android:text="How was it?"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+
+            <View style="@style/orangeDivider"
+                android:id="@+id/divider1"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ratingRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical"
+            android:weightSum="1">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -186,7 +204,7 @@
                     android:layout_weight="0.2"
                     android:background="@android:color/transparent"
                     android:gravity="center_horizontal"
-                    android:text="1" />
+                    android:text="@string/r1" />
 
                 <TextView
                     android:id="@+id/rate2"
@@ -197,7 +215,7 @@
                     android:layout_weight="0.2"
                     android:background="@android:color/transparent"
                     android:gravity="center_horizontal"
-                    android:text="2" />
+                    android:text="@string/r2" />
 
                 <TextView
                     android:id="@+id/rate3"
@@ -208,7 +226,7 @@
                     android:layout_weight="0.2"
                     android:background="@android:color/transparent"
                     android:gravity="center_horizontal"
-                    android:text="3" />
+                    android:text="@string/r3" />
 
                 <TextView
                     android:id="@+id/rate4"
@@ -219,7 +237,7 @@
                     android:layout_weight="0.2"
                     android:background="@android:color/transparent"
                     android:gravity="center_horizontal"
-                    android:text="4" />
+                    android:text="@string/r4" />
 
                 <TextView
                     android:id="@+id/rate5"
@@ -230,29 +248,40 @@
                     android:layout_weight="0.2"
                     android:background="@android:color/transparent"
                     android:gravity="center_horizontal"
-                    android:text="5" />
+                    android:text="@string/r5" />
             </LinearLayout>
+
+
 
         </LinearLayout>
 
+
         <LinearLayout
-            android:id="@+id/myCommentHeader"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:measureWithLargestChild="true"
-            android:orientation="horizontal"
-            android:weightSum="1">
+            android:layout_marginRight="10dp">
 
             <TextView
                 android:id="@+id/whatDidYouThink"
                 style="@style/beerProfileHeaderText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.5"
+                android:elegantTextHeight="false"
                 android:text="What did you think?"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+
+            <View style="@style/orangeDivider"
+                android:id="@+id/orangeDivider3"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
         </LinearLayout>
+
 
         <LinearLayout
             android:id="@+id/postInitialCommentRow"
@@ -269,7 +298,8 @@
                 android:layout_weight="0.75"
                 android:ems="10"
                 android:inputType="textMultiLine"
-                android:lines="2" />
+                android:lines="2"
+                android:layout_marginLeft="10dp" />
 
             <Button
                 android:id="@+id/postCommentButton"
@@ -277,7 +307,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_weight="0.25"
-                android:text="Post" />
+                android:text="@string/post_button_text"
+                android:layout_marginRight="10dp" />
 
         </LinearLayout>
 
@@ -300,16 +331,24 @@
                 style="@style/beerProfileHeaderText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="See what others are saying"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:text="See what others think"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+            <View style="@style/orangeDivider"
+                android:id="@+id/orangeDivider2"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/othersCommentsRow"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"></LinearLayout>
 
     </LinearLayout>
 
