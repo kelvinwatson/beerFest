@@ -247,22 +247,25 @@ app.get('/startUp/:firstName/:lastName/:facebookCredential', function (req, res)
 											var myCommentsForBeers = rows;
 											for(var i=0,len=response.beers.length; i<len; i++) {
 												response.beers[i].comments = [];
+												response.favorites[i].comments = [];
 												for(var x=0,len=commentsForBeers.length; x<len; x++) {
 													if(commentsForBeers[x].beerId === response.beers[i].beerID) {
 														response.beers[i].comments.push(commentsForBeers[x]);
+														response.favorites[i].comments.push(commentsForBeers[x]);
 													}
 												}
 												response.beers[i].averageRating = 0.0;
 												for(var x=0,len=averageRatingsForBeers.length; x<len; x++) {
 													if(averageRatingsForBeers[x].beerId === response.beers[i].beerID) {
 														response.beers[i].averageRating = averageRatingsForBeers[x].averageRating;
+														response.favorites[i].averageRating = averageRatingsForBeers[x].averageRating;
 													}
 												}
 												response.beers[i].myComment = "";
 												for(var x=0,len=myCommentsForBeers.length; x<len; x++) {
 													if(myCommentsForBeers[x].beerId === response.beers[i].beerID) {
 														response.beers[i].myComment = myCommentsForBeers[x].comment;
-														response.beers[i].myRating = myCommentsForBeers[x].rating;
+														response.favorites[i].myRating = myCommentsForBeers[x].rating;
 													}
 												}
 											}
