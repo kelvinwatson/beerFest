@@ -1,3 +1,6 @@
+//TODO: error handling when unable to establish connection
+//TODO: emulator crashes on startup - null object exception
+
 package com.iamhoppy.hoppy;
 
 import android.app.Dialog;

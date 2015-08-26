@@ -1,5 +1,7 @@
 package com.iamhoppy.hoppy;
 
+import android.view.Gravity;
+import android.view.ViewGroup.LayoutParams;
 import android.text.TextUtils;
 import android.app.ActionBar;
 import android.content.Intent;
@@ -24,7 +26,9 @@ import com.squareup.picasso.Picasso;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class BeerProfile extends AppCompatActivity {
@@ -38,8 +42,8 @@ public class BeerProfile extends AppCompatActivity {
     private TextView editCommentClickableView;
     private TextView editableCommentView;
     private TextView myNameView;
+    private TextView timeView;
     private LinearLayout myCommentRow;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,23 +124,75 @@ public class BeerProfile extends AppCompatActivity {
     }
 
     private void displayOtherComments() {
+        //get reference to row
         LinearLayout othersCommentsRow = (LinearLayout)findViewById(R.id.othersCommentsRow);
+
+        //define layout params
+        LinearLayout.LayoutParams fullWidthText = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT,1f);
+        fullWidthText.setMargins(0,5,0,0);
+        LinearLayout.LayoutParams halfWidth = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT,0.5f);
+        halfWidth.setMargins(0,5,0,0);
+        LinearLayout.LayoutParams horizontalRuleParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,1);
+        horizontalRuleParam.setMargins(0,5,0,0);
+
+
         //loop through display other users' comments array and user firstName and lastInitial
         List<String> comments = beer.getComments();
         int i = 1;
         for(String c : comments){
+            //parse out the name
+            String[] commentLines = c.split(System.getProperty("line.separator"));
+            String pUserName = commentLines[0];
+            String pTime = commentLines[1];
+            System.out.println("pTime="+pTime);
+            //TODO: error handling: what if comment is only one line (name?) possible?
+
+            //reconstruct comment from lines array
+            StringBuilder sBuilder = new StringBuilder();
+            for(int k=2,len=commentLines.length; k<len; k++){
+                if(k != len-1) sBuilder.append(commentLines[k]+"\n");
+                else sBuilder.append(commentLines[k]);
+            }
+            String pComment = sBuilder.toString();
+
+            //generate views
             //generate and display horizontal rule
             View horizontalRule = new View(this);
-            horizontalRule.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 3));
+            horizontalRule.setLayoutParams(horizontalRuleParam);
             horizontalRule.setId(99 - i);
             horizontalRule.setBackgroundColor(Color.parseColor("#B3B3B3"));
-            othersCommentsRow.addView(horizontalRule);
-            //createTextView and setText
+
+            TextView nameView = new TextView(this);
+            nameView.setLayoutParams(halfWidth);
+
+            nameView.setText(pUserName);
+            nameView.setTypeface(null, Typeface.BOLD);
+            nameView.setTextColor(Color.parseColor("#EB9100"));
+            nameView.setTextSize(15);
+
+            TextView timeView = new TextView(this);
+            timeView.setLayoutParams(halfWidth);
+            timeView.setGravity(Gravity.RIGHT);
+            timeView.setText(pTime);
+            timeView.setTextSize(15);
+
             TextView commentView = new TextView(this);
-            commentView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            commentView.setText(c);
+            commentView.setLayoutParams(fullWidthText);
+            commentView.setText(pComment);
+            commentView.setTypeface(null, Typeface.ITALIC);
             commentView.setTextSize(15);
-            //commentView.setId(99 + i);
+            commentView.setTextColor(Color.parseColor("#000000"));
+            commentView.setBackgroundColor(Color.parseColor("#E0FFFF"));
+
+            //generate new horizontal layout for name and timeStamp and specify params
+            LinearLayout hLL = new LinearLayout(getApplicationContext());
+            hLL.setOrientation(LinearLayout.HORIZONTAL);
+
+            //add created views
+            othersCommentsRow.addView(horizontalRule);
+            hLL.addView(nameView);
+            hLL.addView(timeView);
+            othersCommentsRow.addView(hLL);
             othersCommentsRow.addView(commentView);
             i++;
         }
@@ -147,40 +203,57 @@ public class BeerProfile extends AppCompatActivity {
     private void displayMyComment(){
         //display user's comment at the top with edit option, hide the EditText and postCommentButton
         myCommentRow = (LinearLayout)findViewById(R.id.myCommentRow);
+        //specify layout parameters for vertical layout
+        LinearLayout.LayoutParams fullWidth = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT,1f);
 
-        //define layout parameters for views
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT,1f);
+        //create new horizontal layout for name and timeStamp and specify params
+        LinearLayout horizontalForNameTime = new LinearLayout(getApplicationContext());
+        horizontalForNameTime.setOrientation(LinearLayout.HORIZONTAL);
+        //horizontalLayout set weightSum
+        LinearLayout.LayoutParams halfWidth = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT,0.5f);
 
-        //split fullComment into name and comment
-        //http://stackoverflow.com/questions/3451903/extracting-substring-by-lines
+        //split fullComment into name and comment http://stackoverflow.com/questions/3451903/extracting-substring-by-lines
         String[] commentLines = beer.getMyComment().split(System.getProperty("line.separator"));
         String parsedUserName = commentLines[0];
-
+        String parsedTime = commentLines[1];
         //error handling: what if comment is only one line (name?) possible?
 
+        //reconstruct comment from lines array
         StringBuilder aggregate = new StringBuilder();
         //copy array from index 1 into a commentString
-        for(int k=1,len=commentLines.length; k<len; k++){
-            aggregate.append(commentLines[k]+"\n");
+        for(int k=2,len=commentLines.length; k<len; k++){
+            if(k != len-1) aggregate.append(commentLines[k]+"\n");
+            else aggregate.append(commentLines[k]);
         }
         String parsedComment = aggregate.toString();
 
         myNameView = new TextView(this);
+        myNameView.setLayoutParams(halfWidth);
         myNameView.setText(parsedUserName);
-        myNameView.setTypeface(null,Typeface.BOLD);
-
         myNameView.setTypeface(null, Typeface.BOLD);
-        myNameView.setLayoutParams(layoutParams);
+        myNameView.setTextColor(Color.parseColor("#EB9100"));
+        myNameView.setTextSize(15);
+
+        timeView = new TextView(this);
+        timeView.setLayoutParams(halfWidth);
+        timeView.setText(parsedTime);
+        timeView.setGravity(Gravity.RIGHT);
+        timeView.setTextSize(15);
 
         editableCommentView = new TextView(this);
+        editableCommentView.setLayoutParams(fullWidth);
         editableCommentView.setText(parsedComment);
-        editableCommentView.setLayoutParams(layoutParams);
+        editableCommentView.setTypeface(null, Typeface.ITALIC);
+        editableCommentView.setLayoutParams(fullWidth);
+        editableCommentView.setTextSize(15);
+        editableCommentView.setTextColor(Color.parseColor("#000000"));
+        editableCommentView.setBackgroundColor(Color.parseColor("#FFE5B4"));
 
         editCommentClickableView = new TextView(this);
         editCommentClickableView.setText("Edit Comment");
         editCommentClickableView.setTextColor(Color.parseColor("#006699"));
         editCommentClickableView.setTypeface(null, Typeface.ITALIC);
-        editCommentClickableView.setLayoutParams(layoutParams);
+        editCommentClickableView.setLayoutParams(fullWidth);
         editCommentClickableView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,24 +265,24 @@ public class BeerProfile extends AppCompatActivity {
             }
         });
 
-        myCommentRow.addView(myNameView);
+        horizontalForNameTime.addView(myNameView);
+        horizontalForNameTime.addView(timeView);
+        myCommentRow.addView(horizontalForNameTime);
         myCommentRow.addView(editableCommentView);
         myCommentRow.addView(editCommentClickableView);
     }
 
     private void postComment(){
         userComment = commentTextBox.getText().toString();   //get text from EditText view
-        userComment = user.getFirstName() + "\n" + userComment;
-        try{
-            userComment = URLEncoder.encode(userComment, "UTF-8");
-        }catch(UnsupportedEncodingException e){
-            e.printStackTrace();
-        }
+        String timeStamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:").format(Calendar.getInstance().getTime());
+        System.out.println("post comment timeStamp="+timeStamp);
+        userComment = user.getFirstName() + "\n" + timeStamp + "\n" + userComment;
         beer.setMyComment(userComment);
-        callReviewService();
+        callReviewService(userComment); //encodes comment and updates API
         commentTextBox.setVisibility(View.GONE); //gone means removed from layout and won't occupy space
         postCommentButton.setVisibility(View.GONE); //invisible means removed form layout but still occupies space
-        postInitialCommentRow.setVisibility(View.VISIBLE);
+        postInitialCommentRow.setVisibility(View.GONE);
+        myCommentRow.setVisibility(View.VISIBLE);
         displayMyComment();
     }
 
@@ -275,18 +348,23 @@ public class BeerProfile extends AppCompatActivity {
             }
         }
         if(makeCall) {
-            callReviewService();
+            callReviewService(beer.getMyComment());
         }
     }
 
-    private void callReviewService() {
+    private void callReviewService(String comment) {
+        try{
+            comment = URLEncoder.encode(beer.getMyComment(), "UTF-8");
+        }catch(UnsupportedEncodingException e){
+            e.printStackTrace();
+        }
         Intent updateIntent = new Intent(getApplicationContext(), UpdateReview.class);
         try {
             updateIntent.putExtra("userID", user.getId());
             updateIntent.putExtra("beerID", beer.getId());
             updateIntent.putExtra("rating", beer.getRating());
             if(beer.getMyComment() != null && beer.getMyComment().length() > 1) {
-                updateIntent.putExtra("comment", beer.getMyComment());
+                updateIntent.putExtra("comment", comment);
             } else {
                 updateIntent.putExtra("comment", "NULL");
             }

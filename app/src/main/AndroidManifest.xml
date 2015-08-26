@@ -56,11 +56,6 @@
             android:exported="true" >
         </service>
 
-        <service
-            android:name=".PostEditComment"
-            android:enabled="true"
-            android:exported="true" >
-        </service>
 
         <activity
             android:name=".BeerProfile"
