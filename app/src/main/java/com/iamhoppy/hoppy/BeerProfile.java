@@ -1,5 +1,6 @@
 package com.iamhoppy.hoppy;
 
+import android.text.TextUtils;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Color;
@@ -36,6 +37,8 @@ public class BeerProfile extends AppCompatActivity {
     public LinearLayout postInitialCommentRow;
     private TextView editCommentClickableView;
     private TextView editableCommentView;
+    private TextView myNameView;
+    private LinearLayout myCommentRow;
 
 
     @Override
@@ -104,6 +107,7 @@ public class BeerProfile extends AppCompatActivity {
 
         //Set visibility on whether or not user has already posted comment
         if(beer.getMyComment() != null && !beer.getMyComment().equals("NULL")){  //user has previously recorded a comment
+            postInitialCommentRow.setVisibility(View.GONE);
             commentTextBox.setVisibility(View.GONE); //gone means removed from layout and won't occupy space
             postCommentButton.setVisibility(View.GONE); //invisible means removed form layout but still occupies space
             displayMyComment();
@@ -116,7 +120,7 @@ public class BeerProfile extends AppCompatActivity {
     }
 
     private void displayOtherComments() {
-        LinearLayout commentsSection = (LinearLayout)findViewById(R.id.commentsSection);
+        LinearLayout othersCommentsRow = (LinearLayout)findViewById(R.id.othersCommentsRow);
         //loop through display other users' comments array and user firstName and lastInitial
         List<String> comments = beer.getComments();
         int i = 1;
@@ -126,26 +130,52 @@ public class BeerProfile extends AppCompatActivity {
             horizontalRule.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 3));
             horizontalRule.setId(99 - i);
             horizontalRule.setBackgroundColor(Color.parseColor("#B3B3B3"));
-            commentsSection.addView(horizontalRule);
+            othersCommentsRow.addView(horizontalRule);
             //createTextView and setText
             TextView commentView = new TextView(this);
             commentView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             commentView.setText(c);
             commentView.setTextSize(15);
             //commentView.setId(99 + i);
-            commentsSection.addView(commentView);
+            othersCommentsRow.addView(commentView);
             i++;
         }
     }
 
+
+
     private void displayMyComment(){
         //display user's comment at the top with edit option, hide the EditText and postCommentButton
-        postInitialCommentRow = (LinearLayout)findViewById(R.id.postInitialCommentRow);
-        //add clickable "edit comment" view and to this layout
+        myCommentRow = (LinearLayout)findViewById(R.id.myCommentRow);
+
+        //define layout parameters for views
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT,1f);
+
+        //split fullComment into name and comment
+        //http://stackoverflow.com/questions/3451903/extracting-substring-by-lines
+        String[] commentLines = beer.getMyComment().split(System.getProperty("line.separator"));
+        String parsedUserName = commentLines[0];
+
+        //error handling: what if comment is only one line (name?) possible?
+
+        StringBuilder aggregate = new StringBuilder();
+        //copy array from index 1 into a commentString
+        for(int k=1,len=commentLines.length; k<len; k++){
+            aggregate.append(commentLines[k]+"\n");
+        }
+        String parsedComment = aggregate.toString();
+
+        myNameView = new TextView(this);
+        myNameView.setText(parsedUserName);
+        myNameView.setTypeface(null,Typeface.BOLD);
+
+        myNameView.setTypeface(null, Typeface.BOLD);
+        myNameView.setLayoutParams(layoutParams);
+
         editableCommentView = new TextView(this);
-        editableCommentView.setText(beer.getMyComment());
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT,1f);
+        editableCommentView.setText(parsedComment);
         editableCommentView.setLayoutParams(layoutParams);
+
         editCommentClickableView = new TextView(this);
         editCommentClickableView.setText("Edit Comment");
         editCommentClickableView.setTextColor(Color.parseColor("#006699"));
@@ -161,13 +191,15 @@ public class BeerProfile extends AppCompatActivity {
                 editCommentClickableView.setVisibility(View.GONE);
             }
         });
-        postInitialCommentRow.addView(editableCommentView);
-        postInitialCommentRow.addView(editCommentClickableView);
+
+        myCommentRow.addView(myNameView);
+        myCommentRow.addView(editableCommentView);
+        myCommentRow.addView(editCommentClickableView);
     }
 
     private void postComment(){
         userComment = commentTextBox.getText().toString();   //get text from EditText view
-        userComment += " -- " + user.getFirstName();
+        userComment = user.getFirstName() + "\n" + userComment;
         try{
             userComment = URLEncoder.encode(userComment, "UTF-8");
         }catch(UnsupportedEncodingException e){
