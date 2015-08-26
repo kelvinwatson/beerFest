@@ -23,7 +23,7 @@
 
 
     <LinearLayout
-        android:id="@+id/row1"
+        android:id="@+id/row2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -259,15 +259,8 @@
         android:id="@+id/commentsSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:orientation="horizontal"
-        android:weightSum="1">
-
-        <TextView
-            android:id="@+id/comments"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+        android:orientation="vertical"
+        android:layout_margin="10dp">
 
     </LinearLayout>
 

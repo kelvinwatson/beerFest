@@ -14,12 +14,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +33,10 @@ public class BeerProfile extends AppCompatActivity {
     private EditText commentTextBox;
     private Button postCommentButton;
     private String userComment;
-    LinearLayout postInitialCommentRow;
+    public LinearLayout postInitialCommentRow;
+    private TextView editCommentClickableView;
+    private TextView editableCommentView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,49 +89,64 @@ public class BeerProfile extends AppCompatActivity {
             }
         });
 
+        //Reference views
         postInitialCommentRow = (LinearLayout)findViewById(R.id.postInitialCommentRow);
         commentTextBox = (EditText)findViewById(R.id.commentTextBox);
         postCommentButton = (Button)findViewById(R.id.postCommentButton);
+
+        //Listener for postCommentButton
         postCommentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(beer.getComment() == null){
-                    postComment();
-                }else{
-                    editExistingComment();   //modify existing comment?
-                }
+                postComment();
             }
         });
-        //Reference editText and postButton
-        if(beer.getComment() != null){ //user has previously recorded a comment
+
+        //Set visibility on whether or not user has already posted comment
+        if(beer.getMyComment() != null && !beer.getMyComment().equals("NULL")){  //user has previously recorded a comment
             commentTextBox.setVisibility(View.GONE); //gone means removed from layout and won't occupy space
             postCommentButton.setVisibility(View.GONE); //invisible means removed form layout but still occupies space
-            postInitialCommentRow.setVisibility(View.GONE);
-            displayComments(); //until user wants to edit
-        } else {
-            //make commentTextBox and postCommentButton visible as this is the user's initial post
+            displayMyComment();
+        } else {                        //make commentTextBox and postCommentButton visible as this is the user's initial post
             postInitialCommentRow.setVisibility(View.VISIBLE);
             commentTextBox.setVisibility(View.VISIBLE);
             postCommentButton.setVisibility(View.VISIBLE);
-            //Set listener on button
-
         }
-
+        displayOtherComments(); //until user wants to edit
     }
 
-    private void editExistingComment(){
-
-    }
-
-    private void displayComments(){
-        //display user's comment at the top with edit option, hide the EditText and postCommentButton
+    private void displayOtherComments() {
         LinearLayout commentsSection = (LinearLayout)findViewById(R.id.commentsSection);
+        //loop through display other users' comments array and user firstName and lastInitial
+        List<String> comments = beer.getComments();
+        int i = 1;
+        for(String c : comments){
+            //generate and display horizontal rule
+            View horizontalRule = new View(this);
+            horizontalRule.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 3));
+            horizontalRule.setId(99 - i);
+            horizontalRule.setBackgroundColor(Color.parseColor("#B3B3B3"));
+            commentsSection.addView(horizontalRule);
+            //createTextView and setText
+            TextView commentView = new TextView(this);
+            commentView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            commentView.setText(c);
+            commentView.setTextSize(15);
+            //commentView.setId(99 + i);
+            commentsSection.addView(commentView);
+            i++;
+        }
+    }
+
+    private void displayMyComment(){
+        //display user's comment at the top with edit option, hide the EditText and postCommentButton
+        postInitialCommentRow = (LinearLayout)findViewById(R.id.postInitialCommentRow);
         //add clickable "edit comment" view and to this layout
-        TextView editableCommentView = new TextView(this);
-        editableCommentView.setText(beer.getComment());
+        editableCommentView = new TextView(this);
+        editableCommentView.setText(beer.getMyComment());
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT,1f);
         editableCommentView.setLayoutParams(layoutParams);
-        TextView editCommentClickableView = new TextView(this);
+        editCommentClickableView = new TextView(this);
         editCommentClickableView.setText("Edit Comment");
         editCommentClickableView.setTextColor(Color.parseColor("#006699"));
         editCommentClickableView.setTypeface(null, Typeface.ITALIC);
@@ -136,38 +157,28 @@ public class BeerProfile extends AppCompatActivity {
                 postInitialCommentRow.setVisibility(View.VISIBLE);
                 commentTextBox.setVisibility(View.VISIBLE);
                 postCommentButton.setVisibility(View.VISIBLE);
+                editableCommentView.setVisibility(View.GONE);
+                editCommentClickableView.setVisibility(View.GONE);
             }
         });
-        commentsSection.addView(editableCommentView);
-        commentsSection.addView(editCommentClickableView);
-
-        //loop through display other users' comments array and user firstName and lastInitial
-        /*for(String c : beer.getAllComments()){
-            //generate and display horizontal rule
-            View horizontalRule = new View(this);
-            horizontalRule.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,2));
-            horizontalRule.setBackgroundColor(Color.parseColor("#B3B3B3"));
-            commentsSection.addView(horizontalRule);
-            //createTextView and setText
-            TextView commentView = new TextView(this);
-            commentView.setText(c);
-            commentsSection.addView(commentView);
-        }*/
+        postInitialCommentRow.addView(editableCommentView);
+        postInitialCommentRow.addView(editCommentClickableView);
     }
 
     private void postComment(){
         userComment = commentTextBox.getText().toString();   //get text from EditText view
-        beer.setComment(userComment);
-        Intent postIntent = new Intent(getApplicationContext(), UpdateReview.class);
-        try {
-            postIntent.putExtra("userID", user.getId());
-            postIntent.putExtra("beerID", beer.getId());
-            postIntent.putExtra("rating", beer.getRating());
-            postIntent.putExtra("comment", userComment);
-        } catch (Exception e) {
+        userComment += " -- " + user.getFirstName();
+        try{
+            userComment = URLEncoder.encode(userComment, "UTF-8");
+        }catch(UnsupportedEncodingException e){
             e.printStackTrace();
         }
-        getApplicationContext().startService(postIntent);
+        beer.setMyComment(userComment);
+        callReviewService();
+        commentTextBox.setVisibility(View.GONE); //gone means removed from layout and won't occupy space
+        postCommentButton.setVisibility(View.GONE); //invisible means removed form layout but still occupies space
+        postInitialCommentRow.setVisibility(View.VISIBLE);
+        displayMyComment();
     }
 
     private void setClickable(int img1, int img2, int img3, int img4){
@@ -232,18 +243,25 @@ public class BeerProfile extends AppCompatActivity {
             }
         }
         if(makeCall) {
-            Intent updateIntent = new Intent(getApplicationContext(), UpdateReview.class);
-            try {
-                updateIntent.putExtra("userID", user.getId());
-                updateIntent.putExtra("beerID", beer.getId());
-                updateIntent.putExtra("rating", rating);
-                updateIntent.putExtra("comment", "NULL");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            getApplicationContext().startService(updateIntent);
+            callReviewService();
         }
+    }
 
+    private void callReviewService() {
+        Intent updateIntent = new Intent(getApplicationContext(), UpdateReview.class);
+        try {
+            updateIntent.putExtra("userID", user.getId());
+            updateIntent.putExtra("beerID", beer.getId());
+            updateIntent.putExtra("rating", beer.getRating());
+            if(beer.getMyComment() != null && beer.getMyComment().length() > 1) {
+                updateIntent.putExtra("comment", beer.getMyComment());
+            } else {
+                updateIntent.putExtra("comment", "NULL");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        getApplicationContext().startService(updateIntent);
     }
 
     private void populateBeer() {

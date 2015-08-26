@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -11,8 +12,10 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 public class UpdateReview extends Service {
     private static final String TAG = "com.iamhoppy.hoppy";
@@ -48,6 +51,8 @@ public class UpdateReview extends Service {
                     }
                     Log.i(TAG, "RESPONSE: " + response);
                     Log.i(TAG, "Connnection established!  http://45.58.38.34/addReview/" + userID + "/" + beerID + "/" + rating + "/" + comment);
+                    Toast.makeText(getApplication(), "Review recorded!", Toast.LENGTH_SHORT).show();
+
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage());
                 }
