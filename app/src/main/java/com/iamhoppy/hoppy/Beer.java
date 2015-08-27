@@ -11,12 +11,12 @@ public class Beer implements Serializable, Comparable {
     private String type;
     private String ibu;
     private String abv;
-    private double rating;
+    private double rating = -1;
     private double averageRating;
     private String brewery;
     private String breweryLogoURL;
     private String description;
-    private String comment = null;
+    private String myComment = null;
     private boolean favorited=false;
     private List<String> comments=null;
 
@@ -108,12 +108,12 @@ public class Beer implements Serializable, Comparable {
         this.favorited = favorited;
     }
 
-    public String getComment() {
-        return comment;
+    public String getMyComment() {
+        return myComment;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setMyComment(String myComment) {
+        this.myComment = myComment;
     }
 
     @Override

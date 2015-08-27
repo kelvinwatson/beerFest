@@ -1,3 +1,6 @@
+//TODO: error handling when unable to establish connection
+//TODO: emulator crashes on startup - null object exception
+
 package com.iamhoppy.hoppy;
 
 import android.app.Dialog;
@@ -74,9 +77,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //FacebookSdk.sdkInitialize(getApplicationContext());
-        //FacebookSdk.getApplicationSignature(getApplicationContext());
 
+        /* Initialize Facebook SDK */
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         setContentView(R.layout.activity_main);
         loginButton = (LoginButton) findViewById(R.id.login_button);
@@ -108,11 +110,12 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     ((Button)findViewById(R.id.login_button)).setVisibility(View.INVISIBLE);
                     ((ProgressBar)findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-                    //callback registration
+
+                    /* Callback registration*/
                     LoginManager.getInstance().registerCallback(callbackManager,
                             new FacebookCallback<LoginResult>() {
                                 @Override
-                                public void onSuccess(LoginResult loginResult) { //redirect?
+                                public void onSuccess(LoginResult loginResult) {
                                     userID = loginResult.getAccessToken().getUserId();
                                     userToken = loginResult.getAccessToken().getToken();
                                     LoginManager.getInstance().logInWithReadPermissions(MainActivity.this, Arrays.asList("public_profile", "user_friends"));
@@ -123,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onCancel() {
-                                    // App code
                                     Toast.makeText(getApplication(), "fail", Toast.LENGTH_SHORT).show();
                                     ((ProgressBar)findViewById(R.id.progressBar)).setVisibility(View.INVISIBLE);
                                     ((Button)findViewById(R.id.login_button)).setVisibility(View.VISIBLE);
@@ -131,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onError(FacebookException exception) {
-                                    // App code
                                     Toast.makeText(getApplication(), "error", Toast.LENGTH_SHORT).show();
                                     ((ProgressBar)findViewById(R.id.progressBar)).setVisibility(View.INVISIBLE);
                                     ((Button)findViewById(R.id.login_button)).setVisibility(View.VISIBLE);
@@ -142,8 +143,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /* Get FB credentials */
     private void getFacebookProfile() {
-        //Get FB credentials
         GraphRequest request = GraphRequest.newMeRequest(
                 AccessToken.getCurrentAccessToken(),
                 new GraphRequest.GraphJSONObjectCallback() {
@@ -151,7 +152,6 @@ public class MainActivity extends AppCompatActivity {
                     public void onCompleted(
                             JSONObject object,
                             GraphResponse response) {
-                        // Application code
                         getData(object);
                     }
                 });
@@ -161,12 +161,12 @@ public class MainActivity extends AppCompatActivity {
         request.executeAsync();
     }
 
+    /* Retrieve startUp data */
     private void getData(JSONObject object) {
-        //Make API Call
         IntentFilter filter = new IntentFilter("com.iamhoppy.hoppy.beers");
         MyReceiver receiver = new MyReceiver();
         registerReceiver(receiver, filter);
-        //start the service to get all beers for default event
+        /* Start the service to get all beers for default event */
         Intent fetchIntent = new Intent(this, FetchDefaultEventAllBeers.class);
         try {
             String[] nameParts = object.getString("name").split(" ");

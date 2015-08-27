@@ -38,7 +38,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class DefaultEventAllBeers extends AppCompatActivity {
-    public String jsonResponse;
     private List<Beer> beers = new ArrayList<Beer>();
     private List<Beer> favoriteBeers = new ArrayList<Beer>();
     private List<Event> events = new ArrayList<Event>();
@@ -52,54 +51,39 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default_event_all_beer);
-        //Receiver for UpdateFavorites Service
+
+        /* Receiver for UpdateFavorites Service */
         IntentFilter filter = new IntentFilter("com.iamhoppy.hoppy.favoriteDone");
         FavoriteReceiver favoriteReceiver = new FavoriteReceiver();
         registerReceiver(favoriteReceiver, filter);
-        //Receiver for UpdateReview Service
+
+        /* Receiver for UpdateReview Service */
         IntentFilter reviewFilter = new IntentFilter("com.iamhoppy.hoppy.reviewDone");
         ReviewReceiver reviewReceiver = new ReviewReceiver();
         registerReceiver(reviewReceiver, reviewFilter);
 
-        //Get default event & beer data from MainActivity, parse, and save data
+        /* Get default event & beer data from MainActivity, parse, and save data */
         final Bundle bundle = getIntent().getExtras();
         String defaultEventBeerData = bundle.getString("DefaultEventBeerData");
-        //System.out.println(defaultEventBeerData);
         try {
             JSONObject startUpDataJSONObj = new JSONObject(defaultEventBeerData);
             beers = parseBeers(startUpDataJSONObj, "beers");
             favoriteBeers = parseBeers(startUpDataJSONObj, "favorites");
-            JSONArray eventsJSONArr = startUpDataJSONObj.getJSONArray("events");
-            System.out.println("eventsJSONArr="+eventsJSONArr.toString());
-            for(int i=0, len=eventsJSONArr.length(); i<len; i++){
-                JSONObject eventObj = eventsJSONArr.getJSONObject(i);
-                Event event = new Event();
-                event.setName(eventObj.getString("eventName"));
-                event.setDate(eventObj.getString("eventDate"));
-                event.setLogoURL(eventObj.getString("logoUrl"));
-                events.add(event);
-            }
-            JSONObject userJSONObj = startUpDataJSONObj.getJSONObject("user");
-            user.setFacebookCredential(userJSONObj.getString("facebook_credential"));
-            user.setFirstName(userJSONObj.getString("first_name"));
-            user.setLastName(userJSONObj.getString("last_name"));
-            user.setId(userJSONObj.getInt("id"));
-            System.out.println("UserOBJ: " + userJSONObj.toString());
+            events = parseEvents(startUpDataJSONObj, "events");
+            user = parseUser(startUpDataJSONObj, "user");
         } catch (JSONException e) {
             e.printStackTrace();
         }
         if(bundle==null) return;
-        String facebookPassedString = bundle.getString("facebookCredential");
-        //final TextView facebookText = (TextView)findViewById(R.id.facebookData);
-        //facebookText.setText(facebookPassedString);
+        //String facebookPassedString = bundle.getString("facebookCredential");
 
-        //Create event spinner
+        /* Create event spinner */
         SpinnerAdapter eventAdapter = new EventSpinnerAdapter(this, events);
         Spinner eventSpinner = (Spinner)findViewById(R.id.eventSpinner);
         eventSpinner.setAdapter(eventAdapter);
         System.out.println("eventSpinnerAdapter set");
 
-        //Create list of beers
+        /* Create list of beers */
         System.out.println("UserID: " + user.getId());
         ListAdapter beerAdapter = new BeerRowAdapter(this, beers, user);
         final ListView beerList = (ListView)findViewById(R.id.beerList); //get reference to listview
@@ -110,18 +94,17 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         //String selectedBeer = String.valueOf(parent.getItemAtPosition(position));
                         Beer selectedBeer = (Beer)(beerList.getItemAtPosition(position));
-                        //System.out.println("beer id=" + selectedBeer.getId());
-                        System.out.println("user selected=" + selectedBeer.getName());
+                        System.out.println("User selected=" + selectedBeer.getName());
                         Toast.makeText(DefaultEventAllBeers.this, "loading...", Toast.LENGTH_SHORT).show();
                         Intent viewBeerProfile = new Intent(DefaultEventAllBeers.this, BeerProfile.class);
                         viewBeerProfile.putExtra("beer", selectedBeer);
                         viewBeerProfile.putExtra("user", user);
                         startActivity(viewBeerProfile);
-                        //really should be intent.putExtra("BeerID",selectedBeer.getId());
                     }
                 }
         );
 
+        /* Button to view all beers */
         Button allBeersButton = (Button)findViewById(R.id.allBeersButton);
         allBeersButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,6 +115,7 @@ public class DefaultEventAllBeers extends AppCompatActivity {
             }
         });
 
+        /*Button to view favorite beers */
         Button favoriteBeersButton = (Button)findViewById(R.id.favoriteBeersButton);
         favoriteBeersButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,6 +127,7 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         });
     }
 
+    /* Broadcast receiver for reviews */
     public class ReviewReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -155,23 +140,23 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                 for(Beer beer : beers) {
                     if(beer.getId() == beerId) {
                         beer.setRating(rating);
-                        beer.setComment(comment);
+                        beer.setMyComment(comment);
                     }
                 }
                 for(Beer beer : favoriteBeers) {
                     if(beer.getId() == beerId) {
                         beer.setRating(rating);
-                        beer.setComment(comment);
+                        beer.setMyComment(comment);
                     }
                 }
             }
         }
     }
 
+    /* Broadcast receiver for favorites */
     public class FavoriteReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // broadcast is detected
             ((Button)findViewById(R.id.favoriteBeersButton)).setClickable(false);
             ((Button)findViewById(R.id.allBeersButton)).setClickable(false);
             int userId = intent.getIntExtra("userID", 0);
@@ -204,16 +189,36 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         }
     }
 
+    /* Parses JSON object and saves to User class */
+    private User parseUser(JSONObject startUpDataJSONObj, String param) throws JSONException {
+        JSONObject userJSONObj = startUpDataJSONObj.getJSONObject(param);
+        User tempUser = new User();
+        tempUser.setFacebookCredential(userJSONObj.getString("facebook_credential"));
+        tempUser.setFirstName(userJSONObj.getString("first_name"));
+        tempUser.setLastName(userJSONObj.getString("last_name"));
+        tempUser.setId(userJSONObj.getInt("id"));
+        return tempUser;
+    }
 
-    /*
+    /* Parses JSON object and saves to Event class */
+    private List<Event> parseEvents(JSONObject startUpDataJSONObj, String param) throws JSONException{
+        JSONArray eventsJSONArr = startUpDataJSONObj.getJSONArray(param);
+        List<Event> tempEvents = new ArrayList<Event>();
+        for(int i=0, len=eventsJSONArr.length(); i<len; i++){
+            JSONObject eventObj = eventsJSONArr.getJSONObject(i);
+            Event event = new Event();
+            if(eventObj.has("eventName") && !eventObj.isNull("eventName")) event.setName(eventObj.getString("eventName"));
+            if(eventObj.has("eventDate") && !eventObj.isNull("eventDate")) event.setDate(eventObj.getString("eventDate"));
+            if(eventObj.has("logoUrl") && !eventObj.isNull("logoUrl")) event.setLogoURL(eventObj.getString("logoUrl"));
+            tempEvents.add(event);
+        }
+        return tempEvents;
+    }
 
-    private boolean favorited;
-    private List<String> allComments;
-     */
+    /* Parses JSON object and saves to Beer class */
     private List<Beer> parseBeers(JSONObject startUpDataJSONObj, String param) throws JSONException {
-        System.out.println("in parse beers");
         JSONArray beersJSONArr = startUpDataJSONObj.getJSONArray(param);
-        System.out.println("beersJSONArr="+beersJSONArr.toString());
+        //System.out.println("beersJSONArr="+beersJSONArr.toString());
         List<Beer> tempBeers = new ArrayList<Beer>();
         for(int i=0, len=beersJSONArr.length(); i<len; i++) {
             JSONObject beerObj = beersJSONArr.getJSONObject(i);
@@ -227,6 +232,9 @@ public class DefaultEventAllBeers extends AppCompatActivity {
             if (beerObj.has("beerType") && !beerObj.isNull("beerType")){
                 beer.setType(beerObj.getString("beerType"));
             }
+            if (beerObj.has("averageRating") && !beerObj.isNull("averageRating")){
+                beer.setAverageRating(beerObj.getDouble("averageRating"));
+            }
             if(beerObj.has("beerIBU") && !beerObj.isNull("beerIBU")) {
                 beer.setIbu(beerObj.getString("beerIBU"));
             }
@@ -234,7 +242,6 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                 beer.setAbv(beerObj.getString("beerABV"));
             }
             if(beerObj.has("myRating")){
-                System.out.println("this beer has a rating!");
                 beer.setRating(beerObj.getDouble("myRating"));
             }
             if(beerObj.has("breweryName") && !beerObj.isNull("breweryName")) {
@@ -246,11 +253,10 @@ public class DefaultEventAllBeers extends AppCompatActivity {
             if(beerObj.has("beerDescription") && !beerObj.isNull("beerDescription")) {
                 beer.setDescription(beerObj.getString("beerDescription"));
             }
-            if(beerObj.has("myComment") && beerObj.getString("myComment").equals("NULL")){
-                System.out.println("this beer has myComment!");
-                beer.setComment(beerObj.getString("myComment"));
+            if(beerObj.has("myComment") && !beerObj.getString("myComment").equals("NULL")){
+                beer.setMyComment(beerObj.getString("myComment"));
             } //else leave as default null value
-            if(beerObj.has("favorited") && !beerObj.isNull("favorited")) { //checks if value exists or is null
+            if(beerObj.has("favorited") && !beerObj.isNull("favorited")) {
                 beer.setFavorited(beerObj.getBoolean("favorited"));
             } //else leave as default false
             if(beerObj.has("comments") && !beerObj.isNull("comments")){
@@ -261,7 +267,7 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                 }
                 beer.setComments(tempComments);
             }
-            System.out.println("testing printing the new beer object"+beer.toString());
+            System.out.println("Test printing the beer object"+beer.toString());
             tempBeers.add(beer);
         }
         return tempBeers;
