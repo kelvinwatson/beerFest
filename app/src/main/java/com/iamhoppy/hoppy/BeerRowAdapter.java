@@ -90,7 +90,12 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
         beerName.setText(singleBeerItem.getName());
         breweryName.setText(singleBeerItem.getBrewery());
         beerType.setText(singleBeerItem.getType());
-        averageRating.setText(String.format("%.1f", singleBeerItem.getAverageRating()));
+        if(singleBeerItem.getAverageRating()==0.0){
+            averageRating.setText(String.format("%.1f", 3.0));
+        }
+        else{
+            averageRating.setText(String.format("%.1f", singleBeerItem.getAverageRating()));
+        }
         if(singleBeerItem.getAbv() != null && singleBeerItem.getIbu() != null) {
             beerABVIBU.setText("ABV " + singleBeerItem.getAbv() + ", IBU " + singleBeerItem.getIbu());
         }
