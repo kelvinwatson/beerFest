@@ -80,15 +80,14 @@ function getAverageRatingAllBeers(callback){
 }
 
 function getFavoriteBeers(eventId, userId, callback) {
-	var selectBeersForEvent = "SELECT 'true' AS favorited, br.logo_url AS logoUrl, br.name AS breweryName, re.rating AS myRating, re.comment AS myComment, e.name AS eventName,DATE_FORMAT(e.event_date, '%W, %M %D, %Y') AS eventDate, b.id as beerID, b.name AS beerName, b.type AS beerType, b.ABV AS beerABV, b.IBU AS beerIBU, b.description AS beerDescription " +
+	var selectBeersForEvent = "SELECT DISTINCT 'true' AS favorited, br.logo_url AS logoUrl, br.name AS breweryName, e.name AS eventName,DATE_FORMAT(e.event_date, '%W, %M %D, %Y') AS eventDate, b.id as beerID, b.name AS beerName, b.type AS beerType, b.ABV AS beerABV, b.IBU AS beerIBU, b.description AS beerDescription " +
 	"FROM users u "+
 	"INNER JOIN favorites f ON f.user_id=u.id "+
 	"INNER JOIN beers b ON beer_id=b.id  "+
-	"INNER JOIN reviews re ON re.beer_id=b.id " +
 	"INNER JOIN breweries br ON br.id=b.brewery_id "+
 	"INNER JOIN features fe ON fe.beer_id=b.id "+
 	"INNER JOIN events e ON e.id=fe.event_id "+
-	"WHERE e.id="+eventId+" AND u.id="+userId+" AND rating IS NOT NULL ORDER BY b.name ASC;";
+	"WHERE e.id="+eventId+" AND u.id="+userId+" ORDER BY b.name ASC;";
 	con.query(selectBeersForEvent, function(err, rows, fields) {
 		if (err) {
 			callback(false);
@@ -183,17 +182,23 @@ function matchFavoriteBeers(beers, favorites) {
 		for(var x=0; x<beers.length; x++) {
 			if(favorites[i].beerID === beers[x].beerID) {
 				beers[x].favorited = true;
+				favorites[i].favorited = true;
+				//merge other factors
+				favorites[i].comments = beers[x].comments;
+				favorites[i].averageRating = beers[x].averageRating;
+				favorites[i].myComment = beers[x].myComment;
+				favorites[i].myRating = beers[x].myRating;
 			}
 		}
 	}
-	return beers;
+	return {beers: beers, favorites: favorites};
 }
 
 app.get('/addReview/:userId/:beerId/:rating/:comment', function (req, res) {
 	var userId = req.params.userId;
 	var beerId = req.params.beerId;
 	var rating = req.params.rating;
-	var comment = req.params.comment;
+	var comment = decodeURI(req.params.comment);
 	var reqData = [userId, beerId, rating, comment];
 	addReview(reqData, function(success, rows) {
 		var response = {};
@@ -236,7 +241,11 @@ app.get('/startUp/:firstName/:lastName/:facebookCredential', function (req, res)
 							var beers = rows;
 							getFavoriteBeers(eventId, userId, function(success, rows) {
 								var favoriteBeers = rows;
-								response.beers = matchFavoriteBeers(beers, favoriteBeers);
+								console.log('fav beers');
+								console.log(favoriteBeers);
+								response.beers = beers;//matchFavoriteBeers(beers, favoriteBeers);
+								console.log('after match');
+								console.log(favoriteBeers);
 								response.favorites = favoriteBeers;
 								response.success = success;
 								getAllCommentsForBeers(userId, function(success, rows) {
@@ -245,30 +254,32 @@ app.get('/startUp/:firstName/:lastName/:facebookCredential', function (req, res)
 										var averageRatingsForBeers = rows;
 										getAllMyCommentsForBeers(userId, function(success, rows) {
 											var myCommentsForBeers = rows;
+											//Add details to all beers
 											for(var i=0,len=response.beers.length; i<len; i++) {
 												response.beers[i].comments = [];
-												response.favorites[i].comments = [];
-												for(var x=0,len=commentsForBeers.length; x<len; x++) {
+												for(var x=0,lenx=commentsForBeers.length; x<lenx; x++) {
 													if(commentsForBeers[x].beerId === response.beers[i].beerID) {
-														response.beers[i].comments.push(commentsForBeers[x]);
-														response.favorites[i].comments.push(commentsForBeers[x]);
+														console.log('pushing: ' + commentsForBeers[x].comment);
+														response.beers[i].comments.push(commentsForBeers[x].comment);
 													}
 												}
 												response.beers[i].averageRating = 0.0;
-												for(var x=0,len=averageRatingsForBeers.length; x<len; x++) {
+												for(var x=0,lenx=averageRatingsForBeers.length; x<lenx; x++) {
 													if(averageRatingsForBeers[x].beerId === response.beers[i].beerID) {
 														response.beers[i].averageRating = averageRatingsForBeers[x].averageRating;
-														response.favorites[i].averageRating = averageRatingsForBeers[x].averageRating;
 													}
 												}
 												response.beers[i].myComment = "";
-												for(var x=0,len=myCommentsForBeers.length; x<len; x++) {
+												for(var x=0,lenx=myCommentsForBeers.length; x<lenx; x++) {
 													if(myCommentsForBeers[x].beerId === response.beers[i].beerID) {
 														response.beers[i].myComment = myCommentsForBeers[x].comment;
-														response.favorites[i].myRating = myCommentsForBeers[x].rating;
+														response.beers[i].myRating = myCommentsForBeers[x].rating;
 													}
 												}
 											}
+											var beersAndFavBeers = matchFavoriteBeers(beers, favoriteBeers);
+											response.beers = beersAndFavBeers.beers;
+											response.favorites = beersAndFavBeers.favorites;
 											res.setHeader('Content-Type', 'application/json');
 											res.send(JSON.stringify(response));
 										});
