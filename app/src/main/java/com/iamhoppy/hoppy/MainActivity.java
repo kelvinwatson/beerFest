@@ -198,6 +198,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        profileTracker.stopTracking();
+        if(profileTracker != null) {
+            assert profileTracker != null;
+            profileTracker.stopTracking();
+        }
     }
 }

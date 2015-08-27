@@ -96,10 +96,15 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
         else{
             averageRating.setText(String.format("%.1f", singleBeerItem.getAverageRating()));
         }
-        if(singleBeerItem.getAbv() != null && singleBeerItem.getIbu() != null) {
+        if(singleBeerItem.getAbv() == null && singleBeerItem.getIbu() != null) {
+            beerABVIBU.setText("IBU " + singleBeerItem.getIbu());
+        } else if(singleBeerItem.getAbv() != null && singleBeerItem.getIbu() == null) {
+            beerABVIBU.setText("ABV " + singleBeerItem.getAbv());
+        } else if(singleBeerItem.getAbv() != null && singleBeerItem.getIbu() != null){
             beerABVIBU.setText("ABV " + singleBeerItem.getAbv() + ", IBU " + singleBeerItem.getIbu());
+        } else{ //both null
+            beerABVIBU.setText("");
         }
-
         return customView;
     }
     private String readStream(InputStream is) {
@@ -116,4 +121,6 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
             return "";
         }
     }
+
+
 }

@@ -18,15 +18,21 @@ import java.net.URL;
 public class FetchDefaultEventAllBeers extends Service {
     private static final String TAG = "com.iamhoppy.hoppy";
     private HttpURLConnection urlConnection;
+    private String firstName;
+    private String lastName;
+    private String facebookCredential;
+
     public FetchDefaultEventAllBeers(){
     }
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId){
         Log.i(TAG,"onStartCommand method called");
-        final String firstName = intent.getStringExtra("firstName");
-        final String lastName = intent.getStringExtra("lastName");
-        final String facebookCredential = intent.getStringExtra("facebookCredential");
+        if(intent != null) {
+            firstName = intent.getStringExtra("firstName");
+            lastName = intent.getStringExtra("lastName");
+            facebookCredential = intent.getStringExtra("facebookCredential");
+        }
         Runnable r = new Runnable() {   //MUST place service code in thread(req'd for Service class)
             @Override
             public void run() {
@@ -35,7 +41,6 @@ public class FetchDefaultEventAllBeers extends Service {
                 //http://stackoverflow.com/questions/8376072/whats-the-readstream-method-i-just-can-not-find-it-anywhere
                 try {
                     Log.i(TAG, "in run function!");
-
                     URL url = new URL("http://45.58.38.34/startUp/"+firstName+"/"+lastName+"/"+facebookCredential);
                     System.out.println("Calling: http://45.58.38.34/startUp/"+firstName+"/"+lastName+"/"+facebookCredential);
                     urlConnection = (HttpURLConnection) url.openConnection();
