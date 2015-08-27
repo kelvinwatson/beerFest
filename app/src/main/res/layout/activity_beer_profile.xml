@@ -289,7 +289,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:orientation="horizontal"
-            android:weightSum="1">
+            android:weightSum="1"
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true">
 
             <EditText
                 android:id="@+id/commentTextBox"

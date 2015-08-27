@@ -11,7 +11,7 @@ public class Beer implements Serializable, Comparable {
     private String type;
     private String ibu;
     private String abv;
-    private double rating;
+    private double rating = -1;
     private double averageRating;
     private String brewery;
     private String breweryLogoURL;

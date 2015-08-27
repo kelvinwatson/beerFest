@@ -232,6 +232,9 @@ public class DefaultEventAllBeers extends AppCompatActivity {
             if (beerObj.has("beerType") && !beerObj.isNull("beerType")){
                 beer.setType(beerObj.getString("beerType"));
             }
+            if (beerObj.has("averageRating") && !beerObj.isNull("averageRating")){
+                beer.setAverageRating(beerObj.getDouble("averageRating"));
+            }
             if(beerObj.has("beerIBU") && !beerObj.isNull("beerIBU")) {
                 beer.setIbu(beerObj.getString("beerIBU"));
             }

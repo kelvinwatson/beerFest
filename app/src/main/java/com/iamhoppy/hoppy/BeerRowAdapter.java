@@ -62,7 +62,7 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
         TextView breweryName = (TextView)customView.findViewById(R.id.breweryName);
         TextView beerType = (TextView)customView.findViewById(R.id.beerType);
         TextView beerABVIBU = (TextView)customView.findViewById(R.id.beerABVIBU);
-        TextView score = (TextView)customView.findViewById(R.id.score);
+        TextView averageRating = (TextView)customView.findViewById(R.id.score);
 
         System.out.println("position=" + position + " singleBeerItem=" + singleBeerItem.getName());
 
@@ -90,6 +90,7 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
         beerName.setText(singleBeerItem.getName());
         breweryName.setText(singleBeerItem.getBrewery());
         beerType.setText(singleBeerItem.getType());
+        averageRating.setText(String.format("%.1f", singleBeerItem.getAverageRating()));
         if(singleBeerItem.getAbv() != null && singleBeerItem.getIbu() != null) {
             beerABVIBU.setText("ABV " + singleBeerItem.getAbv() + ", IBU " + singleBeerItem.getIbu());
         }

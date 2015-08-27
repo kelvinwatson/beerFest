@@ -62,37 +62,39 @@ public class BeerProfile extends AppCompatActivity {
         ratingImages.add((ImageView) findViewById(R.id.ratingImg4));
         ratingImages.add((ImageView) findViewById(R.id.ratingImg5));
 
-        if(beer.getRating() >= 0) {
+        if(beer.getRating() >= 1) {
             ratingClicked(beer.getRating(), false);
+        } else {
+            ratingClicked(3, false);
         }
         ratingImages.get(0).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ratingClicked(0, true);
-            }
-        });
-        ratingImages.get(1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ratingClicked(1, true);
             }
         });
-        ratingImages.get(2).setOnClickListener(new View.OnClickListener() {
+        ratingImages.get(1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ratingClicked(2, true);
             }
         });
-        ratingImages.get(3).setOnClickListener(new View.OnClickListener() {
+        ratingImages.get(2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ratingClicked(3, true);
             }
         });
-        ratingImages.get(4).setOnClickListener(new View.OnClickListener() {
+        ratingImages.get(3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ratingClicked(4, true);
+            }
+        });
+        ratingImages.get(4).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ratingClicked(5, true);
             }
         });
 
@@ -110,7 +112,7 @@ public class BeerProfile extends AppCompatActivity {
         });
 
         //Set visibility on whether or not user has already posted comment
-        if(beer.getMyComment() != null && !beer.getMyComment().equals("NULL")){  //user has previously recorded a comment
+        if(beer.getMyComment() != null && !beer.getMyComment().equals("NULL") && beer.getMyComment().length()>0){  //user has previously recorded a comment
             postInitialCommentRow.setVisibility(View.GONE);
             commentTextBox.setVisibility(View.GONE); //gone means removed from layout and won't occupy space
             postCommentButton.setVisibility(View.GONE); //invisible means removed form layout but still occupies space
@@ -120,7 +122,9 @@ public class BeerProfile extends AppCompatActivity {
             commentTextBox.setVisibility(View.VISIBLE);
             postCommentButton.setVisibility(View.VISIBLE);
         }
-        displayOtherComments(); //until user wants to edit
+        if(beer.getComments() != null){
+            displayOtherComments();
+        }
     }
 
     private void displayOtherComments() {
@@ -141,9 +145,14 @@ public class BeerProfile extends AppCompatActivity {
         for(String c : comments){
             //parse out the name
             String[] commentLines = c.split(System.getProperty("line.separator"));
-            String pUserName = commentLines[0];
-            String pTime = commentLines[1];
-            System.out.println("pTime="+pTime);
+            String pUserName = "";
+            String pTime = "";
+            if(commentLines.length > 0) {
+                pUserName = commentLines[0];
+            }
+            if(commentLines.length > 1) {
+                pTime = commentLines[1];
+            }
             //TODO: error handling: what if comment is only one line (name?) possible?
 
             //reconstruct comment from lines array
@@ -215,18 +224,27 @@ public class BeerProfile extends AppCompatActivity {
         halfWidth.setMargins(10,5,10,0);
         //split fullComment into name and comment http://stackoverflow.com/questions/3451903/extracting-substring-by-lines
         String[] commentLines = beer.getMyComment().split(System.getProperty("line.separator"));
-        String parsedUserName = commentLines[0];
-        String parsedTime = commentLines[1];
-        //error handling: what if comment is only one line (name?) possible?
-
-        //reconstruct comment from lines array
-        StringBuilder aggregate = new StringBuilder();
-        //copy array from index 1 into a commentString
-        for(int k=2,len=commentLines.length; k<len; k++){
-            if(k != len-1) aggregate.append(commentLines[k]+"\n");
-            else aggregate.append(commentLines[k]);
+        String parsedComment = "";
+        String parsedUserName = "";
+        String parsedTime = "";
+        if(commentLines.length > 0) {
+            parsedUserName = commentLines[0];
         }
-        String parsedComment = aggregate.toString();
+        if(commentLines.length > 1) {
+            parsedTime = commentLines[1];
+        }
+        //error handling: what if comment is only one line (name?) possible?
+        if(commentLines.length > 2) {
+            //reconstruct comment from lines array
+            StringBuilder aggregate = new StringBuilder();
+            //copy array from index 1 into a commentString
+            for (int k = 2, len = commentLines.length; k < len; k++) {
+                if (k != len - 1) aggregate.append(commentLines[k] + "\n");
+                else aggregate.append(commentLines[k]);
+            }
+            parsedComment = aggregate.toString();
+
+        }
 
         myNameView = new TextView(this);
         myNameView.setLayoutParams(halfWidth);
@@ -248,12 +266,12 @@ public class BeerProfile extends AppCompatActivity {
         editableCommentView.setLayoutParams(fullWidth);
         editableCommentView.setTextSize(15);
         editableCommentView.setTextColor(Color.parseColor("#000000"));
-        editableCommentView.setBackgroundColor(Color.parseColor("#FFE5B4"));
+        //editableCommentView.setBackgroundColor(Color.parseColor("#FFFF66"));
 
         editCommentClickableView = new TextView(this);
         editCommentClickableView.setText("Edit Comment");
         editCommentClickableView.setTextColor(Color.parseColor("#006699"));
-        editCommentClickableView.setTypeface(null, Typeface.ITALIC);
+        //editCommentClickableView.setTypeface(null, Typeface.ITALIC);
         editCommentClickableView.setLayoutParams(fullWidth);
         editCommentClickableView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -261,8 +279,23 @@ public class BeerProfile extends AppCompatActivity {
                 postInitialCommentRow.setVisibility(View.VISIBLE);
                 commentTextBox.setVisibility(View.VISIBLE);
                 postCommentButton.setVisibility(View.VISIBLE);
+                myNameView.setVisibility(View.GONE);
+                timeView.setVisibility(View.GONE);
                 editableCommentView.setVisibility(View.GONE);
                 editCommentClickableView.setVisibility(View.GONE);
+                if(beer.getMyComment() != null) {
+                    String[] commentLines = beer.getMyComment().split(System.getProperty("line.separator"));
+                    //error handling: what if comment is only one line (name?) possible?
+                    //reconstruct comment from lines array
+                    StringBuilder aggregate = new StringBuilder();
+                    //copy array from index 1 into a commentString
+                    for (int k = 2, len = commentLines.length; k < len; k++) {
+                        if (k != len - 1) aggregate.append(commentLines[k] + "\n");
+                        else aggregate.append(commentLines[k]);
+                    }
+                    String parsedComment = aggregate.toString();
+                    commentTextBox.setText(parsedComment);
+                }
             }
         });
 
@@ -275,7 +308,7 @@ public class BeerProfile extends AppCompatActivity {
 
     private void postComment(){
         userComment = commentTextBox.getText().toString();   //get text from EditText view
-        String timeStamp = new SimpleDateFormat("yyyy/MM/dd HH:mm:").format(Calendar.getInstance().getTime());
+        String timeStamp = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(Calendar.getInstance().getTime());
         System.out.println("post comment timeStamp="+timeStamp);
         userComment = user.getFirstName() + "\n" + timeStamp + "\n" + userComment;
         beer.setMyComment(userComment);
@@ -283,7 +316,11 @@ public class BeerProfile extends AppCompatActivity {
         commentTextBox.setVisibility(View.GONE); //gone means removed from layout and won't occupy space
         postCommentButton.setVisibility(View.GONE); //invisible means removed form layout but still occupies space
         postInitialCommentRow.setVisibility(View.GONE);
+        myCommentRow = (LinearLayout)findViewById(R.id.myCommentRow);
         myCommentRow.setVisibility(View.VISIBLE);
+        if(((LinearLayout)myCommentRow).getChildCount()>0){
+            ((LinearLayout)myCommentRow).removeAllViews();
+        }
         displayMyComment();
     }
 
@@ -297,9 +334,9 @@ public class BeerProfile extends AppCompatActivity {
     private void ratingClicked(double rating, boolean makeCall) {
         int intRating = (int)rating;
         beer.setRating(rating);
-        ratingImages.get(intRating).setClickable(false);
+        ratingImages.get(intRating-1).setClickable(false);
         switch (intRating) {
-            case 0: {
+            case 1: {
                 ratingImages.get(0).setImageResource(R.drawable.rate1);
                 setClickable(1, 2, 3, 4);
                 ratingImages.get(1).setImageResource(R.drawable.rate2dark);
@@ -308,7 +345,7 @@ public class BeerProfile extends AppCompatActivity {
                 ratingImages.get(4).setImageResource(R.drawable.rate5dark);
                 break;
             }
-            case 1: {
+            case 2: {
                 ratingImages.get(1).setImageResource(R.drawable.rate2);
                 setClickable(0, 2, 3, 4);
                 ratingImages.get(0).setImageResource(R.drawable.rate1dark);
@@ -317,7 +354,7 @@ public class BeerProfile extends AppCompatActivity {
                 ratingImages.get(4).setImageResource(R.drawable.rate5dark);
                 break;
             }
-            case 2: {
+            case 3: {
                 ratingImages.get(2).setImageResource(R.drawable.rate3);
                 setClickable(0, 1, 3, 4);
                 ratingImages.get(0).setImageResource(R.drawable.rate1dark);
@@ -326,7 +363,7 @@ public class BeerProfile extends AppCompatActivity {
                 ratingImages.get(4).setImageResource(R.drawable.rate5dark);
                 break;
             }
-            case 3: {
+            case 4: {
                 ratingImages.get(3).setImageResource(R.drawable.rate4);
                 setClickable(0, 1, 2, 4);
                 ratingImages.get(0).setImageResource(R.drawable.rate1dark);
@@ -335,7 +372,7 @@ public class BeerProfile extends AppCompatActivity {
                 ratingImages.get(4).setImageResource(R.drawable.rate5dark);
                 break;
             }
-            case 4: {
+            case 5: {
                 ratingImages.get(4).setImageResource(R.drawable.rate5);
                 setClickable(0, 1, 2, 3);
                 ratingImages.get(0).setImageResource(R.drawable.rate1dark);
@@ -354,11 +391,6 @@ public class BeerProfile extends AppCompatActivity {
     }
 
     private void callReviewService(String comment) {
-        try{
-            comment = URLEncoder.encode(beer.getMyComment(), "UTF-8");
-        }catch(UnsupportedEncodingException e){
-            e.printStackTrace();
-        }
         Intent updateIntent = new Intent(getApplicationContext(), UpdateReview.class);
         try {
             updateIntent.putExtra("userID", user.getId());

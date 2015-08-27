@@ -26,7 +26,7 @@ public class UpdateReview extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         final int userID = intent.getIntExtra("userID", 0);
         final int beerID = intent.getIntExtra("beerID", 0);
-        final double rating = intent.getDoubleExtra("rating", 0.0);
+        final double rating = intent.getDoubleExtra("rating", -1.0);
         final String comment = intent.getStringExtra("comment");
         Log.i(TAG, "IN REVIEWS SERVICE");
         Thread thread = new Thread(new Runnable(){
@@ -34,7 +34,7 @@ public class UpdateReview extends Service {
             public void run() {
                 try {
                     Log.i(TAG, "Add a Favorite!");
-                    url = new URL("http://45.58.38.34/addReview/" + userID + "/" + beerID + "/" + rating + "/" + comment);
+                    url = new URL("http://45.58.38.34/addReview/" + userID + "/" + beerID + "/" + rating  + "/" + URLEncoder.encode(comment, "UTF-8"));
                     urlConnection = (HttpURLConnection) url.openConnection();
                     InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                     String response = readStream(in);
