@@ -28,6 +28,15 @@
         <item name="android:background">#FFA500</item>
     </style>
 
+    <!-- source http://stackoverflow.com/questions/29357310/android-how-to-hide-progress-circle-in-facebook-login -->
+    <style name="fullyTranslucent" parent="android:Theme.Translucent.NoTitleBar">
+        <item name="android:progressBarStyle">@style/InvisibleProgress</item>
+    </style>
+
+    <style name="InvisibleProgress">
+        <item name="android:visibility">gone</item>
+    </style>
+
     <!-- Themes -->
     <!--<color name="backgroundColor">#ffffff</color>
 

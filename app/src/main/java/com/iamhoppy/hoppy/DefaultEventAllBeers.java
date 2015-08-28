@@ -99,14 +99,15 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        //String selectedBeer = String.valueOf(parent.getItemAtPosition(position));
+                        view.setEnabled(false);
                         Beer selectedBeer = (Beer)(beerList.getItemAtPosition(position));
                         System.out.println("User selected=" + selectedBeer.getName());
-                        Toast.makeText(DefaultEventAllBeers.this, "loading...", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DefaultEventAllBeers.this, "Loading...", Toast.LENGTH_SHORT).show();
                         Intent viewBeerProfile = new Intent(DefaultEventAllBeers.this, BeerProfile.class);
                         viewBeerProfile.putExtra("beer", selectedBeer);
                         viewBeerProfile.putExtra("user", user);
                         startActivity(viewBeerProfile);
+                        view.setEnabled(true);
                     }
                 }
         );
@@ -293,8 +294,17 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         // Logs 'app deactivate' App Event.
-        unregisterReceiver(favoriteReceiver);
-        unregisterReceiver(reviewReceiver);
+        try{
+            unregisterReceiver(favoriteReceiver);
+        } catch(Exception e){
+            e.printStackTrace(); //ignore exception
+        }
+
+        try{
+            unregisterReceiver(reviewReceiver);
+        } catch(Exception e){
+            e.printStackTrace(); //ignore exception
+        }
         AppEventsLogger.deactivateApp(this);
     }
 
@@ -328,7 +338,15 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(favoriteReceiver);
-        unregisterReceiver(reviewReceiver);
+        try{
+            unregisterReceiver(favoriteReceiver);
+        } catch(Exception e){
+            e.printStackTrace(); //ignore exception
+        }
+        try{
+            unregisterReceiver(reviewReceiver);
+        } catch(Exception e){
+            e.printStackTrace(); //ignore exception
+        }
     }
 }

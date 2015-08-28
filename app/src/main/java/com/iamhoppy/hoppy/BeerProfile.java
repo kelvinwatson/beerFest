@@ -141,70 +141,72 @@ public class BeerProfile extends AppCompatActivity {
 
         //loop through display other users' comments array and user firstName and lastInitial
         List<String> comments = beer.getComments();
-        int i = 1;
-        for(String c : comments){
-            //parse out the name
-            String[] commentLines = c.split(System.getProperty("line.separator"));
-            String pUserName = "";
-            String pTime = "";
-            if(commentLines.length > 0) {
-                pUserName = commentLines[0];
+        if(comments.size()!=1 && !comments.get(0).equals("NULL")){
+            int i = 1;
+            for (String c : comments) {
+                //parse out the name
+                String[] commentLines = c.split(System.getProperty("line.separator"));
+                String pUserName = "";
+                String pTime = "";
+                if (commentLines.length > 0) {
+                    pUserName = commentLines[0];
+                }
+                if (commentLines.length > 1) {
+                    pTime = commentLines[1];
+                }
+                //TODO: error handling: what if comment is only one line (name?) possible?
+
+                //reconstruct comment from lines array
+                StringBuilder sBuilder = new StringBuilder();
+                for (int k = 2, len = commentLines.length; k < len; k++) {
+                    if (k != len - 1) sBuilder.append(commentLines[k] + "\n");
+                    else sBuilder.append(commentLines[k]);
+                }
+                String pComment = sBuilder.toString();
+
+                //generate and display horizontal rule
+                if (i != 1) {
+                    View horizontalRule = new View(this);
+                    horizontalRule.setLayoutParams(horizontalRuleParam);
+                    horizontalRule.setId(99 - i);
+                    horizontalRule.setBackgroundColor(Color.parseColor("#B3B3B3"));
+                    othersCommentsRow.addView(horizontalRule);
+                }
+
+                //generate views
+                TextView nameView = new TextView(this);
+                nameView.setLayoutParams(halfWidth);
+
+                nameView.setText(pUserName);
+                nameView.setTypeface(null, Typeface.BOLD);
+                nameView.setTextColor(Color.parseColor("#EB9100"));
+                nameView.setTextSize(15);
+
+                TextView timeView = new TextView(this);
+                timeView.setLayoutParams(halfWidth);
+                timeView.setGravity(Gravity.RIGHT);
+                timeView.setText(pTime);
+                timeView.setTextSize(10);
+
+                TextView commentView = new TextView(this);
+                commentView.setLayoutParams(fullWidthText);
+                commentView.setText(pComment);
+                commentView.setTypeface(null, Typeface.ITALIC);
+                commentView.setTextSize(15);
+                commentView.setTextColor(Color.parseColor("#000000"));
+                //commentView.setBackgroundColor(Color.parseColor("#E0FFFF"));
+
+                //generate new horizontal layout for name and timeStamp and specify params
+                LinearLayout hLL = new LinearLayout(getApplicationContext());
+                hLL.setOrientation(LinearLayout.HORIZONTAL);
+
+                //add created views
+                hLL.addView(nameView);
+                hLL.addView(timeView);
+                othersCommentsRow.addView(hLL);
+                othersCommentsRow.addView(commentView);
+                i++;
             }
-            if(commentLines.length > 1) {
-                pTime = commentLines[1];
-            }
-            //TODO: error handling: what if comment is only one line (name?) possible?
-
-            //reconstruct comment from lines array
-            StringBuilder sBuilder = new StringBuilder();
-            for(int k=2,len=commentLines.length; k<len; k++){
-                if(k != len-1) sBuilder.append(commentLines[k]+"\n");
-                else sBuilder.append(commentLines[k]);
-            }
-            String pComment = sBuilder.toString();
-
-            //generate and display horizontal rule
-            if(i!=1) {
-                View horizontalRule = new View(this);
-                horizontalRule.setLayoutParams(horizontalRuleParam);
-                horizontalRule.setId(99 - i);
-                horizontalRule.setBackgroundColor(Color.parseColor("#B3B3B3"));
-                othersCommentsRow.addView(horizontalRule);
-            }
-
-            //generate views
-            TextView nameView = new TextView(this);
-            nameView.setLayoutParams(halfWidth);
-
-            nameView.setText(pUserName);
-            nameView.setTypeface(null, Typeface.BOLD);
-            nameView.setTextColor(Color.parseColor("#EB9100"));
-            nameView.setTextSize(15);
-
-            TextView timeView = new TextView(this);
-            timeView.setLayoutParams(halfWidth);
-            timeView.setGravity(Gravity.RIGHT);
-            timeView.setText(pTime);
-            timeView.setTextSize(10);
-
-            TextView commentView = new TextView(this);
-            commentView.setLayoutParams(fullWidthText);
-            commentView.setText(pComment);
-            commentView.setTypeface(null, Typeface.ITALIC);
-            commentView.setTextSize(15);
-            commentView.setTextColor(Color.parseColor("#000000"));
-            //commentView.setBackgroundColor(Color.parseColor("#E0FFFF"));
-
-            //generate new horizontal layout for name and timeStamp and specify params
-            LinearLayout hLL = new LinearLayout(getApplicationContext());
-            hLL.setOrientation(LinearLayout.HORIZONTAL);
-
-            //add created views
-            hLL.addView(nameView);
-            hLL.addView(timeView);
-            othersCommentsRow.addView(hLL);
-            othersCommentsRow.addView(commentView);
-            i++;
         }
     }
 
