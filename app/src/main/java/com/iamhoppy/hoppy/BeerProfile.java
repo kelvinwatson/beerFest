@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.squareup.picasso.Picasso;
 
@@ -125,6 +127,28 @@ public class BeerProfile extends AppCompatActivity {
         if(beer.getComments() != null){
             displayOtherComments();
         }
+
+        //Set favorite toggle
+        ToggleButton favoriteToggle = (ToggleButton)findViewById(R.id.favoriteToggle);
+        if(beer.isFavorited()) {
+            favoriteToggle.setChecked(true);
+        }
+        favoriteToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                final boolean isCheckedFinal = isChecked;
+                beer.setFavorited(isChecked);
+                Intent updateIntent = new Intent(getApplicationContext(), UpdateFavorites.class);
+                try {
+                    updateIntent.putExtra("userID", user.getId());
+                    updateIntent.putExtra("beerID", beer.getId());
+                    updateIntent.putExtra("checkedFinal", isCheckedFinal);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                getApplicationContext().getApplicationContext().startService(updateIntent);
+            }
+        });
     }
 
     private void displayOtherComments() {
@@ -310,7 +334,7 @@ public class BeerProfile extends AppCompatActivity {
 
     private void postComment(){
         userComment = commentTextBox.getText().toString();   //get text from EditText view
-        String timeStamp = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(Calendar.getInstance().getTime());
+        String timeStamp = new SimpleDateFormat("MMM dd, yyyy hh:mm aaa").format(Calendar.getInstance().getTime());
         System.out.println("post comment timeStamp="+timeStamp);
         userComment = user.getFirstName() + "\n" + timeStamp + "\n" + userComment;
         beer.setMyComment(userComment);
@@ -422,6 +446,7 @@ public class BeerProfile extends AppCompatActivity {
             ((TextView) findViewById(R.id.beerABVIBU)).setText("ABV " + beer.getAbv() + ", IBU " + beer.getIbu());
         }
         ((TextView)findViewById(R.id.beerDescription)).setText(beer.getDescription());
+        ((TextView)findViewById(R.id.averageRatingText)).setText("Average rating: " + beer.getAverageRating());
     }
 
 

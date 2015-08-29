@@ -22,11 +22,13 @@
             android:configChanges=
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:theme="@style/fullyTranslucent"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -35,6 +37,7 @@
 
         <activity
             android:name=".DefaultEventAllBeers"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_default_event_all_beer" >
         </activity>
 
@@ -59,6 +62,7 @@
 
         <activity
             android:name=".BeerProfile"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_beer_profile" >
         </activity>
     </application>

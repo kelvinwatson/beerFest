@@ -6,7 +6,8 @@
         style="@style/cleanAndClear"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:focusableInTouchMode="true">
 
         <LinearLayout
             android:id="@+id/row1"
@@ -30,9 +31,12 @@
             android:id="@+id/row2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:orientation="horizontal"
-            android:weightSum="1">
+            android:weightSum="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
 
             <ImageView
                 android:id="@+id/breweryLogo"
@@ -51,15 +55,15 @@
                 android:layout_marginRight="5dp"
                 android:layout_weight="0.6"
                 android:orientation="vertical"
-                android:weightSum="1">
+                android:weightSum="1"
+                android:layout_gravity="center_vertical">
 
                 <TextView
                     style="@style/beerProfileName"
                     android:id="@+id/beerName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="beerName"
-                    android:textSize="25sp" />
+                    android:text="beerName" />
 
                 <TextView
                     android:id="@+id/breweryName"
@@ -75,6 +79,91 @@
                     android:textAppearance="?android:attr/textAppearanceSmall" />
             </LinearLayout>
 
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/dividerFavTop"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_vertical|center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="\u2022   \u2022   \u2022"
+                android:id="@+id/elipsisTop"
+                android:gravity="center_vertical|center_horizontal"
+                android:textColor="#666666" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/favoriteAverageRow"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:weightSum="1"
+            android:layout_marginTop="-8dp"
+            android:layout_marginBottom="-8dp">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:weightSum="3"
+                android:gravity="center_vertical|center_horizontal"
+                android:id="@+id/favoriteImageLayout">
+
+                <ToggleButton android:id="@+id/favoriteToggle"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:checked="false"
+                    android:textOn=""
+                    android:textOff=""
+                    android:background="@drawable/toggle"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center_vertical|center_horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Average rating: 3.0"
+                    android:id="@+id/averageRatingText"
+                    android:layout_gravity="center" />
+            </LinearLayout>
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/dividerFavBottom"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center|top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_vertical|center_horizontal|top">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="\u2022   \u2022   \u2022"
+                android:id="@+id/elipsisBottom"
+                android:gravity="center_vertical|center_horizontal"
+                android:textColor="#666666" />
         </LinearLayout>
 
         <LinearLayout
@@ -114,7 +203,6 @@
                 android:layout_weight="0.5"
                 android:elegantTextHeight="false"
                 android:text="How was it?"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp" />
 

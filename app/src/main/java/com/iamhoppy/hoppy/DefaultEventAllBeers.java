@@ -285,8 +285,11 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // Logs 'install' and 'app activate' App Events.
-        registerReceiver(favoriteReceiver,new IntentFilter("com.iamhoppy.hoppy.favoriteDone"));
-        registerReceiver(reviewReceiver,new IntentFilter("com.iamhoppy.hoppy.reviewDone"));
+//        registerReceiver(favoriteReceiver,new IntentFilter("com.iamhoppy.hoppy.favoriteDone"));
+//        registerReceiver(reviewReceiver,new IntentFilter("com.iamhoppy.hoppy.reviewDone"));
+        ListAdapter beerAdapter = new BeerRowAdapter(this, beers, user);
+        final ListView beerList = (ListView)findViewById(R.id.beerList); //get reference to listview
+        beerList.setAdapter(beerAdapter);
         AppEventsLogger.activateApp(this);
         }
 
@@ -294,17 +297,16 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         // Logs 'app deactivate' App Event.
-        try{
-            unregisterReceiver(favoriteReceiver);
-        } catch(Exception e){
-            e.printStackTrace(); //ignore exception
-        }
-
-        try{
-            unregisterReceiver(reviewReceiver);
-        } catch(Exception e){
-            e.printStackTrace(); //ignore exception
-        }
+//        try{
+//            unregisterReceiver(favoriteReceiver);
+//        } catch(Exception e){
+//            e.printStackTrace(); //ignore exception
+//        }
+//        try{
+//            unregisterReceiver(reviewReceiver);
+//        } catch(Exception e){
+//            e.printStackTrace(); //ignore exception
+//        }
         AppEventsLogger.deactivateApp(this);
     }
 

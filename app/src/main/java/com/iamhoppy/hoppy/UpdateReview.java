@@ -51,7 +51,6 @@ public class UpdateReview extends Service {
                     }
                     Log.i(TAG, "RESPONSE: " + response);
                     Log.i(TAG, "Connnection established!  http://45.58.38.34/addReview/" + userID + "/" + beerID + "/" + rating + "/" + comment);
-                    Toast.makeText(getApplication(), "Review recorded!", Toast.LENGTH_SHORT).show();
 
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage());
