@@ -446,7 +446,13 @@ public class BeerProfile extends AppCompatActivity {
             ((TextView) findViewById(R.id.beerABVIBU)).setText("ABV " + beer.getAbv() + ", IBU " + beer.getIbu());
         }
         ((TextView)findViewById(R.id.beerDescription)).setText(beer.getDescription());
-        ((TextView)findViewById(R.id.averageRatingText)).setText("Average rating: " + beer.getAverageRating());
+
+        if(beer.getAverageRating()==0.0){
+            ((TextView)findViewById(R.id.averageRatingText)).setText("Average rating: " + 3.0);
+        }
+        else{
+            ((TextView)findViewById(R.id.averageRatingText)).setText("Average rating: " + String.format("%.1f", beer.getAverageRating()));
+        }
     }
 
 
