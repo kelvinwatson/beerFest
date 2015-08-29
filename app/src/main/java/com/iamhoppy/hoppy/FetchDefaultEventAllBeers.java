@@ -21,6 +21,7 @@ public class FetchDefaultEventAllBeers extends Service {
     private String firstName;
     private String lastName;
     private String facebookCredential;
+    private boolean isRefresh;
 
     public FetchDefaultEventAllBeers(){
     }
@@ -33,6 +34,7 @@ public class FetchDefaultEventAllBeers extends Service {
                 firstName = intent.getStringExtra("firstName");
                 lastName = intent.getStringExtra("lastName");
                 facebookCredential = intent.getStringExtra("facebookCredential");
+                isRefresh = intent.getBooleanExtra("isRefresh", false);
             }
             Runnable r = new Runnable() {   //MUST place service code in thread(req'd for Service class)
                 @Override
@@ -54,6 +56,7 @@ public class FetchDefaultEventAllBeers extends Service {
                         Intent intent = new Intent();
                         intent.setAction("com.iamhoppy.hoppy.beers");
                         intent.putExtra("DefaultEventBeerData", beerData);
+                        intent.putExtra("isRefresh", isRefresh);
                         sendBroadcast(intent);
                     } catch (IOException e) {
                         Log.i(TAG, "Read error");

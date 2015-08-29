@@ -3,11 +3,15 @@
 
 package com.iamhoppy.hoppy;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract;
@@ -54,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     public String userToken;
     private ProfileTracker profileTracker;
     private AccessToken accessTokenTracker;
+    private MyReceiver receiver;
 
     Handler handler = new Handler(){ //updates interface because threads can't
         @Override
@@ -74,19 +79,38 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            unregisterReceiver(receiver);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void startUp() {
         /* Initialize Facebook SDK */
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         setContentView(R.layout.activity_main);
         loginButton = (LoginButton) findViewById(R.id.login_button);
         //String kh = FacebookSdk.getApplicationSignature(getApplicationContext());
-        if(isLoggedIn()){
+        if (isLoggedIn()) {
             getFacebookProfile();
         } else {
-            ProgressBar progBar = (ProgressBar)findViewById(R.id.progressBar);
+            ProgressBar progBar = (ProgressBar) findViewById(R.id.progressBar);
             progBar.setVisibility(View.INVISIBLE);
             loginButton.setVisibility(View.VISIBLE);
             callbackManager = CallbackManager.Factory.create();
@@ -95,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
                     Log.v("facebook - profile", profile2.getFirstName());
                     System.out.println(isLoggedIn());
-                    if(isLoggedIn()) {
+                    if (isLoggedIn()) {
                         getFacebookProfile();
                     }
                     profileTracker.stopTracking();
@@ -108,8 +132,8 @@ public class MainActivity extends AppCompatActivity {
             loginButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((Button)findViewById(R.id.login_button)).setVisibility(View.INVISIBLE);
-                    ((ProgressBar)findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+                    ((Button) findViewById(R.id.login_button)).setVisibility(View.INVISIBLE);
+                    ((ProgressBar) findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
 
                     /* Callback registration*/
                     LoginManager.getInstance().registerCallback(callbackManager,
@@ -127,19 +151,39 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onCancel() {
                                     Toast.makeText(getApplication(), "fail", Toast.LENGTH_SHORT).show();
-                                    ((ProgressBar)findViewById(R.id.progressBar)).setVisibility(View.INVISIBLE);
-                                    ((Button)findViewById(R.id.login_button)).setVisibility(View.VISIBLE);
+                                    ((ProgressBar) findViewById(R.id.progressBar)).setVisibility(View.INVISIBLE);
+                                    ((Button) findViewById(R.id.login_button)).setVisibility(View.VISIBLE);
                                 }
 
                                 @Override
                                 public void onError(FacebookException exception) {
                                     Toast.makeText(getApplication(), "error", Toast.LENGTH_SHORT).show();
-                                    ((ProgressBar)findViewById(R.id.progressBar)).setVisibility(View.INVISIBLE);
-                                    ((Button)findViewById(R.id.login_button)).setVisibility(View.VISIBLE);
+                                    ((ProgressBar) findViewById(R.id.progressBar)).setVisibility(View.INVISIBLE);
+                                    ((Button) findViewById(R.id.login_button)).setVisibility(View.VISIBLE);
                                 }
                             });
                 }
             });
+        }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(isOnline()) {
+            startUp();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Sorry! Hoppy requires an internet connection.")
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            finish();
+                            moveTaskToBack(true);
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
         }
     }
 
@@ -164,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
     /* Retrieve startUp data */
     private void getData(JSONObject object) {
         IntentFilter filter = new IntentFilter("com.iamhoppy.hoppy.beers");
-        MyReceiver receiver = new MyReceiver();
+        receiver = new MyReceiver();
         registerReceiver(receiver, filter);
         /* Start the service to get all beers for default event */
         Intent fetchIntent = new Intent(this, FetchDefaultEventAllBeers.class);
