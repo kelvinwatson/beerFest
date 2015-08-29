@@ -165,7 +165,7 @@ public class BeerProfile extends AppCompatActivity {
 
         //loop through display other users' comments array and user firstName and lastInitial
         List<String> comments = beer.getComments();
-        if(comments.size()!=1 && !comments.get(0).equals("NULL")){
+        if(comments != null && comments.size() > 0 && comments.size()!=1 && !comments.get(0).equals("NULL")){
             int i = 1;
             for (String c : comments) {
                 //parse out the name
