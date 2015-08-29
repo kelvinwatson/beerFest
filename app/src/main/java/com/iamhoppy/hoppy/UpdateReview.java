@@ -24,42 +24,46 @@ public class UpdateReview extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        final int userID = intent.getIntExtra("userID", 0);
-        final int beerID = intent.getIntExtra("beerID", 0);
-        final double rating = intent.getDoubleExtra("rating", -1.0);
-        final String comment = intent.getStringExtra("comment");
-        Log.i(TAG, "IN REVIEWS SERVICE");
-        Thread thread = new Thread(new Runnable(){
-            @Override
-            public void run() {
-                try {
-                    Log.i(TAG, "Add a Favorite!");
-                    url = new URL("http://45.58.38.34/addReview/" + userID + "/" + beerID + "/" + rating  + "/" + URLEncoder.encode(comment, "UTF-8"));
-                    urlConnection = (HttpURLConnection) url.openConnection();
-                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                    String response = readStream(in);
-                    JSONObject respObj = new JSONObject(response);
-                    if(respObj.getBoolean("success")) {
-                        Intent intent = new Intent();
-                        intent.setAction("com.iamhoppy.hoppy.reviewDone");
-                        intent.putExtra("beerID", beerID);
-                        intent.putExtra("userID", userID);
-                        intent.putExtra("rating", rating);
-                        intent.putExtra("comment", comment);
-                        intent.putExtra("success", true);
-                        sendBroadcast(intent);
-                    }
-                    Log.i(TAG, "RESPONSE: " + response);
-                    Log.i(TAG, "Connnection established!  http://45.58.38.34/addReview/" + userID + "/" + beerID + "/" + rating + "/" + comment);
-                    Toast.makeText(getApplication(), "Review recorded!", Toast.LENGTH_SHORT).show();
+        try {
+            final int userID = intent.getIntExtra("userID", 0);
+            final int beerID = intent.getIntExtra("beerID", 0);
+            final double rating = intent.getDoubleExtra("rating", -1.0);
+            final String comment = intent.getStringExtra("comment");
+            Log.i(TAG, "IN REVIEWS SERVICE");
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Log.i(TAG, "Add a Favorite!");
+                        url = new URL("http://45.58.38.34/addReview/" + userID + "/" + beerID + "/" + rating + "/" + URLEncoder.encode(comment, "UTF-8").replace("+", "%20"));
+                        urlConnection = (HttpURLConnection) url.openConnection();
+                        InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                        String response = readStream(in);
+                        JSONObject respObj = new JSONObject(response);
+                        if (respObj.getBoolean("success")) {
+                            Intent intent = new Intent();
+                            intent.setAction("com.iamhoppy.hoppy.reviewDone");
+                            intent.putExtra("beerID", beerID);
+                            intent.putExtra("userID", userID);
+                            intent.putExtra("rating", rating);
+                            intent.putExtra("comment", comment);
+                            intent.putExtra("success", true);
+                            sendBroadcast(intent);
+                        }
+                        Log.i(TAG, "RESPONSE: " + response);
+                        Log.i(TAG, "Connnection established!  http://45.58.38.34/addReview/" + userID + "/" + beerID + "/" + rating + "/" + comment);
 
-                } catch (Exception e) {
-                    Log.e(TAG, e.getMessage());
+                    } catch (Exception e) {
+                        Log.e(TAG, e.getMessage());
+                    }
                 }
-            }
-        });
-        thread.start();
-        return Service.START_STICKY;
+            });
+            thread.start();
+            return Service.START_STICKY;
+        } catch(Exception e){
+            e.printStackTrace();
+            return Service.START_NOT_STICKY;
+        }
     }
 
     @Override

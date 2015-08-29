@@ -1,6 +1,7 @@
 package com.iamhoppy.hoppy;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,8 @@ import android.graphics.PorterDuff;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.view.ActionMode;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -42,9 +45,16 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     private List<Beer> favoriteBeers = new ArrayList<Beer>();
     private List<Event> events = new ArrayList<Event>();
     private User user = new User();
+    private FavoriteReceiver favoriteReceiver;
+    private ReviewReceiver reviewReceiver;
+    private String defaultEventBeerData;
+    private boolean newlyCreated = true;
 
-    @Override
-    public void onBackPressed() {
+    public boolean onKeyDown(int keycode, KeyEvent event) {
+        if (keycode == KeyEvent.KEYCODE_BACK) {
+            moveTaskToBack(true);
+        }
+        return super.onKeyDown(keycode, event);
     }
 
     @Override
@@ -53,14 +63,14 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         setContentView(R.layout.activity_default_event_all_beer);
 
         /* Receiver for UpdateFavorites Service */
-        IntentFilter filter = new IntentFilter("com.iamhoppy.hoppy.favoriteDone");
-        FavoriteReceiver favoriteReceiver = new FavoriteReceiver();
-        registerReceiver(favoriteReceiver, filter);
+        //IntentFilter filter = new IntentFilter("com.iamhoppy.hoppy.favoriteDone");
+        favoriteReceiver = new FavoriteReceiver();
+        registerReceiver(favoriteReceiver, new IntentFilter("com.iamhoppy.hoppy.favoriteDone"));
 
         /* Receiver for UpdateReview Service */
-        IntentFilter reviewFilter = new IntentFilter("com.iamhoppy.hoppy.reviewDone");
-        ReviewReceiver reviewReceiver = new ReviewReceiver();
-        registerReceiver(reviewReceiver, reviewFilter);
+        //IntentFilter reviewFilter = new IntentFilter("com.iamhoppy.hoppy.reviewDone");
+        reviewReceiver = new ReviewReceiver();
+        registerReceiver(reviewReceiver, new IntentFilter("com.iamhoppy.hoppy.reviewDone"));
 
         /* Get default event & beer data from MainActivity, parse, and save data */
         final Bundle bundle = getIntent().getExtras();
@@ -92,14 +102,15 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        //String selectedBeer = String.valueOf(parent.getItemAtPosition(position));
+                        view.setEnabled(false);
                         Beer selectedBeer = (Beer)(beerList.getItemAtPosition(position));
                         System.out.println("User selected=" + selectedBeer.getName());
-                        Toast.makeText(DefaultEventAllBeers.this, "loading...", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DefaultEventAllBeers.this, "Loading...", Toast.LENGTH_SHORT).show();
                         Intent viewBeerProfile = new Intent(DefaultEventAllBeers.this, BeerProfile.class);
                         viewBeerProfile.putExtra("beer", selectedBeer);
                         viewBeerProfile.putExtra("user", user);
                         startActivity(viewBeerProfile);
+                        view.setEnabled(true);
                     }
                 }
         );
@@ -125,6 +136,7 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                 beerList.setAdapter(beerAdapter);
             }
         });
+        newlyCreated = false;
     }
 
     /* Broadcast receiver for reviews */
@@ -273,12 +285,17 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         return tempBeers;
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Logs 'install' and 'app activate' App Events.
-        AppEventsLogger.activateApp(this);
-        }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        // Logs 'install' and 'app activate' App Events.
+////        registerReceiver(favoriteReceiver,new IntentFilter("com.iamhoppy.hoppy.favoriteDone"));
+////        registerReceiver(reviewReceiver,new IntentFilter("com.iamhoppy.hoppy.reviewDone"));
+//        ListAdapter beerAdapter = new BeerRowAdapter(this, beers, user);
+//        final ListView beerList = (ListView)findViewById(R.id.beerList); //get reference to listview
+//        beerList.setAdapter(beerAdapter);
+//        AppEventsLogger.activateApp(this);
+//        }
 
     @Override
     protected void onPause() {
@@ -287,8 +304,9 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         AppEventsLogger.deactivateApp(this);
     }
 
+
     public static void retrieveData(String JSONdata){
-        System.out.println("printing JSONdata:="+JSONdata);
+        System.out.println("printing JSONdata:=" + JSONdata);
     }
 
     @Override
@@ -311,5 +329,81 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    public class BeerDataReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // broadcast is detected from FetchDefaultEventAllBeers class
+            defaultEventBeerData = intent.getStringExtra("DefaultEventBeerData");
+             /* Parse data */
+            if(defaultEventBeerData != null && !defaultEventBeerData.equals("NULL")) {
+                try {
+                    JSONObject startUpDataJSONObj = new JSONObject(defaultEventBeerData);
+                    beers = parseBeers(startUpDataJSONObj, "beers");
+                    favoriteBeers = parseBeers(startUpDataJSONObj, "favorites");
+                    events = parseEvents(startUpDataJSONObj, "events");
+                    user = parseUser(startUpDataJSONObj, "user");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(defaultEventBeerData==null) return;
+
+            /* ReCreate list of beers */
+            ListAdapter beerAdapter = new BeerRowAdapter(context, beers, user);
+            final ListView beerList = (ListView)findViewById(R.id.beerList); //get reference to listview
+            beerList.setAdapter(beerAdapter);
+        }
+    }
+
+    private void getBeerData() {
+        BeerDataReceiver beerDataReceiver = new BeerDataReceiver();
+        registerReceiver(beerDataReceiver,new IntentFilter("com.iamhoppy.hoppy.beers"));
+
+        /* Start the service to get all beers */
+        Intent fetchIntent = new Intent(this, FetchDefaultEventAllBeers.class);
+        try {
+            if(fetchIntent != null) {
+                fetchIntent.putExtra("firstName", user.getFirstName());
+                fetchIntent.putExtra("lastName", user.getLastName());
+                fetchIntent.putExtra("facebookCredential", user.getFacebookCredential());
+                fetchIntent.putExtra("isRefresh", true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        startService(fetchIntent);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(!newlyCreated) {
+            System.out.println("in onRestart");
+        /* Call the fetch service */
+            getBeerData();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        try{
+            unregisterReceiver(favoriteReceiver);
+        } catch(Exception e){
+            e.printStackTrace(); //ignore exception
+        }
+        try{
+            unregisterReceiver(reviewReceiver);
+        } catch(Exception e){
+            e.printStackTrace(); //ignore exception
+        }
     }
 }
