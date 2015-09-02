@@ -2,13 +2,12 @@ var express = require('express');
 var app = express();
 var path = require("path");
 var mysql = require("mysql");
+var winston = require('winston');
 var con;
 
 function addReview(reqData, callback) {
 	var addReview = "INSERT INTO reviews (user_id, beer_id, rating, comment) VALUES ?;";
 	con.query(addReview, [[reqData]], function(err, results) {
-		console.log(err);
-		console.log(results);
 		if(err) {
 			callback(false);
 		} else {
@@ -20,8 +19,6 @@ function addReview(reqData, callback) {
 function updateReview(reqData, callback) {
 	var updateReview = "UPDATE reviews SET rating=?, comment=? WHERE user_id=? AND beer_id=?;";
 	con.query(updateReview, reqData, function(err, results) {
-		console.log(err);
-		console.log(results);
 		if(err) {
 			callback(false);
 		} else {
@@ -37,8 +34,6 @@ function getAllCommentsForBeers(userId, callback) {
 	"WHERE u.id <> " + userId + " " +
 	"ORDER BY b.id ASC;";
 	con.query(selectCommentsForBeers, function(err, results) {
-		console.log(err);
-		console.log(results);
 		if(err) {
 			callback(false);
 		} else {
@@ -54,8 +49,6 @@ function getAllMyCommentsForBeers(userId, callback) {
 	"WHERE u.id = " + userId + " " +
 	"ORDER BY b.id ASC;";
 	con.query(selectCommentsForBeers, function(err, results) {
-		console.log(err);
-		console.log(results);
 		if(err) {
 			callback(false);
 		} else {
@@ -69,8 +62,6 @@ function getAverageRatingAllBeers(callback){
 	"FROM beers b INNER JOIN reviews re ON re.beer_id=b.id "+
 	"GROUP BY b.id ORDER BY b.id ASC;"; 
 	con.query(selectAverageRating, function(err, results) {
-		console.log(err);
-		console.log(results);
 		if(err) {
 			callback(false);
 		} else {
@@ -109,8 +100,6 @@ function getUser(reqData, callback) {
 function addUser(reqData, callback) {
 	var addUser = "INSERT INTO users (first_name, last_name, facebook_credential) VALUES ?;";
 	con.query(addUser, [[reqData]], function(err, results) {
-		console.log(err);
-		console.log(results);
 		if(err) {
 			callback(false);
 		} else {
@@ -122,8 +111,6 @@ function addUser(reqData, callback) {
 function removeFavorites(reqData, callback) {
 	var removeFavorites = "DELETE FROM favorites WHERE user_id = ? AND beer_id = ?;";
 	con.query(removeFavorites, reqData, function(err, results) {
-		console.log(err);
-		console.log(results);
 		if(err) {
 			callback(false);
 		} else {
@@ -135,8 +122,6 @@ function removeFavorites(reqData, callback) {
 function setFavorites(reqData, callback) {
 	var insertFavorites = "INSERT INTO favorites (user_id, beer_id) VALUES ?;";
 	con.query(insertFavorites, [reqData], function(err, results) {
-		console.log(err);
-		console.log(results);
 		if(err) {
 			callback(false);
 		} else {
@@ -177,7 +162,6 @@ function getBeersForEvent(eventId, callback) {
 }
 
 function matchFavoriteBeers(beers, favorites) {
-	console.log(favorites);
 	for(var i=0; i<favorites.length; i++) {
 		for(var x=0; x<beers.length; x++) {
 			if(favorites[i].beerID === beers[x].beerID) {
@@ -199,11 +183,13 @@ app.get('/addReview/:userId/:beerId/:rating/:comment', function (req, res) {
 	var beerId = req.params.beerId;
 	var rating = req.params.rating;
 	var comment = decodeURI(req.params.comment);
+	winston.info('addReview called with', {userId: userId, beerId: beerId, rating: rating, comment: comment});
 	var reqData = [userId, beerId, rating, comment];
 	addReview(reqData, function(success, rows) {
 		var response = {};
 		if(success) {
 			response.success = success;
+			winston.info('addReview returning - new review', {success: success});
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify(response));
 			return;
@@ -211,6 +197,7 @@ app.get('/addReview/:userId/:beerId/:rating/:comment', function (req, res) {
 			//Try to update instead.
 			updateReview([rating, comment, userId, beerId], function(success, rows) {
 				response.success = success;
+				winston.info('addReview returning - updated review', {success: success});
 				res.setHeader('Content-Type', 'application/json');
 				res.send(JSON.stringify(response));
 				return;
@@ -223,6 +210,7 @@ app.get('/startUp/:firstName/:lastName/:facebookCredential', function (req, res)
 	var firstName = req.params.firstName;
 	var lastName = req.params.lastName;
 	var facebookCredential = req.params.facebookCredential;
+	winston.info('startUp called with params', {firstName: firstName, lastName: lastName, facebookCredential: facebookCredential});
 	var reqData = [firstName, lastName, facebookCredential];
 	addUser(reqData, function(success, rows) {
 		var response = {};
@@ -230,7 +218,6 @@ app.get('/startUp/:firstName/:lastName/:facebookCredential', function (req, res)
 		//Get user ID
 		getUser([facebookCredential], function(success, rows) {
 			if(success) {
-				console.log(rows);
 				userId = rows[0].id;
 				response.user = rows[0];
 				getAllEvents(function(success, rows) {
@@ -241,11 +228,7 @@ app.get('/startUp/:firstName/:lastName/:facebookCredential', function (req, res)
 							var beers = rows;
 							getFavoriteBeers(eventId, userId, function(success, rows) {
 								var favoriteBeers = rows;
-								console.log('fav beers');
-								console.log(favoriteBeers);
-								response.beers = beers;//matchFavoriteBeers(beers, favoriteBeers);
-								console.log('after match');
-								console.log(favoriteBeers);
+								response.beers = beers;
 								response.favorites = favoriteBeers;
 								response.success = success;
 								getAllCommentsForBeers(userId, function(success, rows) {
@@ -259,7 +242,6 @@ app.get('/startUp/:firstName/:lastName/:facebookCredential', function (req, res)
 												response.beers[i].comments = [];
 												for(var x=0,lenx=commentsForBeers.length; x<lenx; x++) {
 													if(commentsForBeers[x].beerId === response.beers[i].beerID) {
-														console.log('pushing: ' + commentsForBeers[x].comment);
 														response.beers[i].comments.push(commentsForBeers[x].comment);
 													}
 												}
@@ -280,6 +262,7 @@ app.get('/startUp/:firstName/:lastName/:facebookCredential', function (req, res)
 											var beersAndFavBeers = matchFavoriteBeers(beers, favoriteBeers);
 											response.beers = beersAndFavBeers.beers;
 											response.favorites = beersAndFavBeers.favorites;
+											winston.info('startUp returning', {response: response});
 											res.setHeader('Content-Type', 'application/json');
 											res.send(JSON.stringify(response));
 										});
@@ -289,6 +272,8 @@ app.get('/startUp/:firstName/:lastName/:facebookCredential', function (req, res)
 						}
 					});
 				});
+			} else {
+				winston.error('getUser database call failed');
 			}
 		});
 	});
@@ -297,6 +282,7 @@ app.get('/startUp/:firstName/:lastName/:facebookCredential', function (req, res)
 app.get('/removeFavorites/:userId/:beerId', function (req, res) {
 	var userId = req.params.userId;
 	var beerId = req.params.beerId;
+	winston.info('removeFavorites called with request', {userId: userIds, beerId: beerIds});
 	var reqData = [];
 	reqData.push(parseInt(userId));
 	reqData.push(parseInt(beerId));
@@ -304,6 +290,7 @@ app.get('/removeFavorites/:userId/:beerId', function (req, res) {
 	removeFavorites(reqData, function(success, rows) {
 		var response = {};
 		response.success = success;
+		winston.info('removeFavorites returning', {reqData: reqData, success: success});
 		res.setHeader('Content-Type', 'application/json');
 		res.send(JSON.stringify(response));
 	});
@@ -312,6 +299,7 @@ app.get('/removeFavorites/:userId/:beerId', function (req, res) {
 app.get('/addFavorites/:userIds/:beerIds', function (req, res) {
 	var userIds = req.params.userIds;
 	var beerIds = req.params.beerIds;
+	winston.info('addFavorites called with request', {userIds: userIds, beerIds: beerIds});
 	if(userIds && beerIds) {
 		userIds = userIds.split(',');
 		beerIds = beerIds.split(',');
@@ -323,7 +311,7 @@ app.get('/addFavorites/:userIds/:beerIds', function (req, res) {
 		fav.push(parseInt(beerIds[i]));
 		reqData.push(fav);
 	}
-	console.log(reqData);
+	winston.info('addFavorites returning', reqData);
 	setFavorites(reqData, function(success, rows) {
 		var response = {};
 		response.success = success;
@@ -332,69 +320,17 @@ app.get('/addFavorites/:userIds/:beerIds', function (req, res) {
 	});
 });
 
-app.get('/getStartupData', function (req, res) {
-	var eventId;
-	var beers = [];
-	var events = [];
-	var response = {};
-	getDefaultEvent(function(success, rows) {
-		var eventId = rows[0].id;
-		getBeersForEvent(eventId, function(success, rows) {
-			if(success) {
-				res.setHeader('Content-Type', 'application/json');
-				res.send(JSON.stringify(rows));
-			}
-		});
-	});
-});
-
-app.get('/getDefaultBeers', function (req, res) {
-	var eventId;
-	var beers = [];
-	var response = {};
-	getDefaultEvent(function(success, rows) {
-		var eventId = rows[0].id;
-		getBeersForEvent(eventId, function(success, rows) {
-			if(success) {
-				response.beers = rows;
-				getAllEvents(function(success, rows) {
-					response.events = rows;
-					res.setHeader('Content-Type', 'application/json');
-					res.send(JSON.stringify(response));
-				});
-			}
-		});
-	});
-});
-
-app.get('/getBeers/:eventId', function (req, res) {
-	var eventId = req.params.eventId;
-	var beers = [];
-	if(!eventId) {
-		//TODO: Handle no eventId
-		res.setHeader('Content-Type', 'application/json');
-		res.send(JSON.stringify({success: false, errorMsg: 'Missing eventId'}));
-		return;
-	} 
-	getBeersForEvent(eventId, function(success, rows) {
-		if(success) {
-			res.setHeader('Content-Type', 'application/json');
-			res.send(JSON.stringify(rows));
-			return;
-		}
-	});
-});
-
 app.get('/', function (req, res) {
-	console.log('default endpoint');
+	winston.info('default endpoint called');
 });
 
 var server = app.listen(80, function () {
 
 	var host = server.address().address;
 	var port = server.address().port;
+	winston.add(winston.transports.File, { filename: 'beerFest.log' });
 
-	console.log('Example app listening at http://%s:%s', host, port);
+	winston.info('Beerfest API listening at http://%s:%s', host, port);
 	var passwords = require('./dbpw.js');
 	con = mysql.createConnection({
 		host: "localhost",
@@ -408,7 +344,7 @@ var server = app.listen(80, function () {
 			console.log(err);
 			return;
 		}
-		console.log('Connection established');
+		winston.info('Database connection established');
 	});
 
 });
