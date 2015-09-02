@@ -17,4 +17,6 @@
     <string name="r2">2</string>
     <string name="r1">1</string>
     <string name="what_did_you_think">What did you think?</string>
+    <string name="title_activity_login_or_create_account">loginOrCreateAccount</string>
+    <string name="title_activity_create_account">createAccount</string>
 </resources>

@@ -9,29 +9,43 @@
         android:id="@+id/eventLogo"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:background="@drawable/eventlogo" />
+        android:background="@android:color/transparent" />
 
     <TextView android:id="@+id/eventName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5px"
-        android:layout_marginTop="2px"
+        android:layout_marginLeft="3dp"
         android:layout_toRightOf="@+id/eventLogo"
         android:padding="5dp"
         android:text="Event Name"
         android:textColor="#000000"
         android:fontFamily="sans-serif-thin"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_marginTop="1dp" />
 
     <TextView android:id="@+id/eventDetails"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/eventName"
-        android:layout_marginLeft="5dip"
+        android:layout_marginLeft="3dp"
         android:layout_toRightOf="@+id/eventLogo"
         android:padding="5dp"
         android:text="Event Date..."
         android:textColor="#bfbfc9"
         android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Coming Soon!"
+        android:textStyle="italic"
+        android:id="@+id/comingSoon"
+        android:fontFamily="sans-serif-thin"
+        android:layout_alignBottom="@+id/eventName"
+        android:layout_toRightOf="@+id/eventName"
+        android:layout_toEndOf="@+id/eventName"
+        android:layout_marginBottom="6dp"
+        android:textColor="#006699" />
 
 </RelativeLayout>

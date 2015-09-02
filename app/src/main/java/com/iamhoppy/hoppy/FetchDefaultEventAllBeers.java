@@ -22,6 +22,9 @@ public class FetchDefaultEventAllBeers extends Service {
     private String lastName;
     private String facebookCredential;
     private boolean isRefresh;
+    private int eventId;
+    private boolean hasEventId = false;
+    private URL url;
 
     public FetchDefaultEventAllBeers(){
     }
@@ -34,6 +37,10 @@ public class FetchDefaultEventAllBeers extends Service {
                 firstName = intent.getStringExtra("firstName");
                 lastName = intent.getStringExtra("lastName");
                 facebookCredential = intent.getStringExtra("facebookCredential");
+                if(intent.hasExtra("eventId")){
+                    eventId = intent.getIntExtra("eventId",-1);
+                    hasEventId = true;
+                }
                 isRefresh = intent.getBooleanExtra("isRefresh", false);
             }
             Runnable r = new Runnable() {   //MUST place service code in thread(req'd for Service class)
@@ -44,9 +51,13 @@ public class FetchDefaultEventAllBeers extends Service {
                     //http://stackoverflow.com/questions/8376072/whats-the-readstream-method-i-just-can-not-find-it-anywhere
                     try {
                         Log.i(TAG, "in run function!");
-                        URL url = new URL("http://45.58.38.34/startUp/" + firstName + "/" + lastName + "/" + facebookCredential);
+                        if(hasEventId){
+                            url = new URL("http://45.58.38.34/startUp/" + firstName + "/" + lastName + "/" + facebookCredential + "/?eventId=" + eventId);
+                        } else {
+                            url = new URL("http://45.58.38.34/startUp/" + firstName + "/" + lastName + "/" + facebookCredential);
+                        }
                         System.out.println("Calling: http://45.58.38.34/startUp/" + firstName + "/" + lastName + "/" + facebookCredential);
-                        urlConnection = (HttpURLConnection) url.openConnection();
+                        urlConnection = (HttpURLConnection)url.openConnection();
                     } catch (IOException e) {
                         Log.i(TAG, "URL Error");
                     }

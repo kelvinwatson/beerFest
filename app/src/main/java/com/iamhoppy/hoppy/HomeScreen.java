@@ -1,5 +1,7 @@
 package com.iamhoppy.hoppy;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
@@ -25,6 +27,7 @@ import java.util.List;
 
 public class HomeScreen extends AppCompatActivity {
     private String defaultEventBeerData;
+    private AccountManager _accountMgr = null;
 
     Handler handler = new Handler(){ //updates interface because threads can't
         @Override
@@ -51,17 +54,31 @@ public class HomeScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Initialize Facebook SDK prior to using UI components
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        String kh = FacebookSdk.getApplicationSignature(getApplicationContext());
-        System.out.println("kh="+kh);
-        setContentView(R.layout.activity_home_screen);
-        IntentFilter filter = new IntentFilter("com.iamhoppy.hoppy.beers");
-        MyReceiver receiver = new MyReceiver();
-        registerReceiver(receiver, filter);
-        //start the service to get all beers for default event
-        Intent fetchIntent = new Intent(this, FetchDefaultEventAllBeers.class);
-        startService(fetchIntent);
+        //Check for hoppy login first, then facebook
+        boolean isHoppyLogin = false;
+        _accountMgr = AccountManager.get(this);
+        Account[] accounts = _accountMgr.getAccounts();
+        for(Account account : accounts) {
+            if(account.name == "HoppyAccount" && account.type == "HoppyLogin") {
+                isHoppyLogin = true;
+                break;
+            }
+        }
+        if(isHoppyLogin) {
+
+        } else {
+            //Initialize Facebook SDK prior to using UI components
+            FacebookSdk.sdkInitialize(getApplicationContext());
+            String kh = FacebookSdk.getApplicationSignature(getApplicationContext());
+            System.out.println("kh=" + kh);
+            setContentView(R.layout.activity_home_screen);
+            IntentFilter filter = new IntentFilter("com.iamhoppy.hoppy.beers");
+            MyReceiver receiver = new MyReceiver();
+            registerReceiver(receiver, filter);
+            //start the service to get all beers for default event
+            Intent fetchIntent = new Intent(this, FetchDefaultEventAllBeers.class);
+            startService(fetchIntent);
+        }
     }
 
     public void onClick(View view){
