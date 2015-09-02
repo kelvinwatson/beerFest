@@ -71,7 +71,7 @@ function getAverageRatingAllBeers(callback){
 }
 
 function getFavoriteBeers(eventId, userId, callback) {
-	var selectBeersForEvent = "SELECT DISTINCT 'true' AS favorited, br.logo_url AS logoUrl, br.name AS breweryName, e.name AS eventName,DATE_FORMAT(e.event_date, '%W, %M %D, %Y') AS eventDate, b.id as beerID, b.name AS beerName, b.type AS beerType, b.ABV AS beerABV, b.IBU AS beerIBU, b.description AS beerDescription " +
+	var selectBeersForEvent = "SELECT DISTINCT 'true' AS favorited, br.logo_url AS logoUrl, br.name AS breweryName, e.name AS eventName,DATE_FORMAT(e.event_date, '%W, %M %d, %Y') AS eventDate, b.id as beerID, b.name AS beerName, b.type AS beerType, b.ABV AS beerABV, b.IBU AS beerIBU, b.description AS beerDescription " +
 	"FROM users u "+
 	"INNER JOIN favorites f ON f.user_id=u.id "+
 	"INNER JOIN beers b ON beer_id=b.id  "+
@@ -131,7 +131,10 @@ function setFavorites(reqData, callback) {
 }
 
 function getAllEvents(callback) {
-	var selectAllEvents = "SELECT id, name AS eventName, DATE_FORMAT(event_date,'%W, %M %D, %Y') AS eventDate, logo_url AS logoUrl FROM events WHERE event_date>CURDATE() ORDER BY eventDate ASC;";
+	var selectAllEvents = "SELECT e.id, e.name AS eventName, DATE_FORMAT(event_date,'%W, %M %d, %Y') AS eventDate, logo_url AS logoUrl, COUNT(b.id) AS beerCount FROM events e"+
+	" LEFT JOIN features f ON f.event_id = e.id" +
+	" LEFT JOIN beers b ON b.id = f.beer_id" +
+	" WHERE event_date>CURDATE() GROUP BY e.id ORDER BY eventDate ASC;";
 	con.query(selectAllEvents, function(err, rows, fields) {
 		if (err) {
 			callback(false);
@@ -141,7 +144,7 @@ function getAllEvents(callback) {
 }
 
 function getDefaultEvent(callback) {
-	var selectDefaultEvent = "SELECT id, name, DATE_FORMAT(event_date, '%W, %M %D, %Y') AS eventDate FROM events WHERE event_date>CURDATE() LIMIT 1;";
+	var selectDefaultEvent = "SELECT id, name, DATE_FORMAT(event_date, '%W, %M %d, %Y') AS eventDate FROM events WHERE event_date>CURDATE() LIMIT 1;";
 	con.query(selectDefaultEvent, function(err, rows, fields) {
 		if (err) {
 			callback(false);
@@ -151,7 +154,7 @@ function getDefaultEvent(callback) {
 }
 
 function getBeersForEvent(eventId, callback) {
-	var selectBeersForEvent = "SELECT br.logo_url AS logoUrl, br.name AS breweryName, e.name AS eventName,DATE_FORMAT(e.event_date, '%W, %M %D, %Y') AS eventDate, b.id as beerID, b.name AS beerName, b.type AS beerType, b.ABV AS beerABV, b.IBU AS beerIBU, b.description AS beerDescription " +
+	var selectBeersForEvent = "SELECT br.logo_url AS logoUrl, br.name AS breweryName, e.name AS eventName,DATE_FORMAT(e.event_date, '%W, %M %d, %Y') AS eventDate, b.id as beerID, b.name AS beerName, b.type AS beerType, b.ABV AS beerABV, b.IBU AS beerIBU, b.description AS beerDescription " +
 	"FROM events e INNER JOIN features ON event_id=e.id INNER JOIN beers b ON beer_id=b.id  INNER JOIN breweries br ON br.id=b.brewery_id WHERE e.id="+eventId+" ORDER BY b.name ASC;";
 	con.query(selectBeersForEvent, function(err, rows, fields) {
 		if (err) {
@@ -210,6 +213,8 @@ app.get('/startUp/:firstName/:lastName/:facebookCredential', function (req, res)
 	var firstName = req.params.firstName;
 	var lastName = req.params.lastName;
 	var facebookCredential = req.params.facebookCredential;
+	var eventId = req.query.eventId;
+	winston.info('!!!!!!!!!!!eventId!!!!!!!!!!!!!! '+eventId);
 	winston.info('startUp called with params', {firstName: firstName, lastName: lastName, facebookCredential: facebookCredential});
 	var reqData = [firstName, lastName, facebookCredential];
 	addUser(reqData, function(success, rows) {
@@ -221,7 +226,9 @@ app.get('/startUp/:firstName/:lastName/:facebookCredential', function (req, res)
 				userId = rows[0].id;
 				response.user = rows[0];
 				getAllEvents(function(success, rows) {
-					var eventId = rows[0].id;
+					if(!eventId) {
+						eventId = rows[0].id;
+					}
 					response.events = rows;
 					getBeersForEvent(eventId, function(success, rows) {
 						if(success) {
@@ -282,7 +289,7 @@ app.get('/startUp/:firstName/:lastName/:facebookCredential', function (req, res)
 app.get('/removeFavorites/:userId/:beerId', function (req, res) {
 	var userId = req.params.userId;
 	var beerId = req.params.beerId;
-	winston.info('removeFavorites called with request', {userId: userIds, beerId: beerIds});
+	//winston.info('removeFavorites called with request', {userId: userIds, beerId: beerIds});
 	var reqData = [];
 	reqData.push(parseInt(userId));
 	reqData.push(parseInt(beerId));
