@@ -82,7 +82,7 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                getContext().getApplicationContext().startService(updateIntent);
+                getContext().startService(updateIntent);
             }
         });
 

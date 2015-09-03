@@ -80,6 +80,7 @@ public class DefaultEventAllBeers extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ListAdapter beerAdapter = new BeerRowAdapter(getApplicationContext(), favoriteBeers, user);
+                Log.i(TAG,"favoriteBeersList="+favoriteBeers.toString());
                 final ListView beerList = (ListView)findViewById(R.id.beerList); //get reference to listview
                 beerList.setAdapter(beerAdapter);
             }
@@ -122,20 +123,36 @@ public class DefaultEventAllBeers extends AppCompatActivity {
             int beerId = intent.getIntExtra("beerID", 0);
             boolean success = intent.getBooleanExtra("success", false);
             boolean added = intent.getBooleanExtra("added", false);
+            boolean alreadyInFavorites = false;
             if(success) {
                 if(added) {
-                    for(Beer b : beers) {
-                        if(b.getId() == beerId) {
-                            b.setFavorited(true);
-                            favoriteBeers.add(b);
+                    int i;
+                    for(i=0; i<beers.size(); i++){
+                        if(beers.get(i).getId()==beerId){
+                            beers.get(i).setFavorited(true);
                             break;
                         }
                     }
+                    alreadyInFavorites = false;
+                    for(int j=0; j<favoriteBeers.size(); j++) {
+                        if (favoriteBeers.get(j).getId() == beerId) {
+                            alreadyInFavorites=true;
+                            break;
+                        }
+                    }
+                    if(!alreadyInFavorites) favoriteBeers.add(beers.get(i));
+                    /*for(Beer b : beers) {
+                        if(b.getId() == beerId) {
+                            b.setFavorited(true);
+                            if(!favoriteBeers.contains(b)) favoriteBeers.add(b);
+                            break;
+                        }
+                    }*/
                 } else {
                     for(Beer b : beers) {
                         if(b.getId() == beerId) {
                             b.setFavorited(false);
-                            favoriteBeers.remove(b);
+                            favoriteBeers.removeAll(Collections.singleton(b));
                             break;
                         }
                     }
@@ -145,6 +162,10 @@ public class DefaultEventAllBeers extends AppCompatActivity {
             }
             ((Button)findViewById(R.id.favoriteBeersButton)).setClickable(true);
             ((Button)findViewById(R.id.allBeersButton)).setClickable(true);
+            Log.i(TAG,"printing favoriteBeers NOW in onReceive");
+            for(int i=0; i<favoriteBeers.size(); i++){
+                Log.i(TAG,"favoriteBeer.get("+i+")"+favoriteBeers.get(i).getName());
+            }
         }
     }
 
