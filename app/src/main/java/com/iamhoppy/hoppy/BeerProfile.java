@@ -131,6 +131,8 @@ public class BeerProfile extends AppCompatActivity {
         ToggleButton favoriteToggle = (ToggleButton)findViewById(R.id.favoriteToggle);
         if(beer.isFavorited()) {
             favoriteToggle.setChecked(true);
+        } else{
+            favoriteToggle.setChecked(false);
         }
         favoriteToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -145,7 +147,7 @@ public class BeerProfile extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                getApplicationContext().getApplicationContext().startService(updateIntent);
+                getApplicationContext().startService(updateIntent);
             }
         });
     }

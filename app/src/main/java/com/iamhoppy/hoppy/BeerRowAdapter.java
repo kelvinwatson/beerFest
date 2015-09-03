@@ -69,11 +69,14 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
         ToggleButton favoriteToggle = (ToggleButton)customView.findViewById(R.id.favoriteToggle);
         if(singleBeerItem.isFavorited()) {
             favoriteToggle.setChecked(true);
+        } else {
+            favoriteToggle.setChecked(false);
         }
         favoriteToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 final boolean isCheckedFinal = isChecked;
+                singleBeerItem.setFavorited(isChecked);
                 Intent updateIntent = new Intent(context, UpdateFavorites.class);
                 try {
                     updateIntent.putExtra("userID", user.getId());

@@ -151,13 +151,14 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                         }
                     }
                     inFavorites = false;
-                    for(int j=0; j<favoriteBeers.size(); j++) {
+                    int j;
+                    for(j=0; j<favoriteBeers.size(); j++) {
                         if (favoriteBeers.get(j).getId() == beerId) {
                             inFavorites=true;
                             break;
                         }
                     }
-                    if(inFavorites) favoriteBeers.remove(beers.get(i));
+                    if(inFavorites) favoriteBeers.remove(j);
                     /*for(Beer b : beers) {
                         if(b.getId() == beerId) {
                             b.setFavorited(false);
