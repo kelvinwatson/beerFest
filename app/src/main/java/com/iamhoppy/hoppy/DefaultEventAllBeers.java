@@ -124,6 +124,7 @@ public class DefaultEventAllBeers extends AppCompatActivity {
             boolean success = intent.getBooleanExtra("success", false);
             boolean added = intent.getBooleanExtra("added", false);
             boolean alreadyInFavorites = false;
+            boolean inFavorites = false;
             if(success) {
                 if(added) {
                     int i;
@@ -141,21 +142,29 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                         }
                     }
                     if(!alreadyInFavorites) favoriteBeers.add(beers.get(i));
-                    /*for(Beer b : beers) {
-                        if(b.getId() == beerId) {
-                            b.setFavorited(true);
-                            if(!favoriteBeers.contains(b)) favoriteBeers.add(b);
+                } else {
+                    int i;
+                    for(i=0; i<beers.size(); i++){
+                        if(beers.get(i).getId()==beerId){
+                            beers.get(i).setFavorited(false);
                             break;
                         }
-                    }*/
-                } else {
-                    for(Beer b : beers) {
+                    }
+                    inFavorites = false;
+                    for(int j=0; j<favoriteBeers.size(); j++) {
+                        if (favoriteBeers.get(j).getId() == beerId) {
+                            inFavorites=true;
+                            break;
+                        }
+                    }
+                    if(inFavorites) favoriteBeers.remove(beers.get(i));
+                    /*for(Beer b : beers) {
                         if(b.getId() == beerId) {
                             b.setFavorited(false);
                             favoriteBeers.removeAll(Collections.singleton(b));
                             break;
                         }
-                    }
+                    }*/
                 }
                 Collections.sort(favoriteBeers);
                 Collections.sort(beers);
@@ -249,7 +258,6 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                 }
                 beer.setComments(tempComments);
             }
-            System.out.println("Test printing the beer object"+beer.toString());
             tempBeers.add(beer);
         }
         return tempBeers;
