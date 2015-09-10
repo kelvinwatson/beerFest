@@ -32,7 +32,6 @@ public class FetchDefaultEventAllBeers extends Service {
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId){
         try {
-            Log.i(TAG, "onStartCommand method called");
             if (intent != null) {
                 firstName = intent.getStringExtra("firstName");
                 lastName = intent.getStringExtra("lastName");
@@ -50,7 +49,6 @@ public class FetchDefaultEventAllBeers extends Service {
                     //http://developer.android.com/reference/java/net/HttpURLConnection.html
                     //http://stackoverflow.com/questions/8376072/whats-the-readstream-method-i-just-can-not-find-it-anywhere
                     try {
-                        Log.i(TAG, "in run function!");
                         if(hasEventId){
                             url = new URL("http://45.58.38.34/startUp/" + firstName + "/" + lastName + "/" + facebookCredential + "/?eventId=" + eventId);
                         } else {
@@ -93,7 +91,6 @@ public class FetchDefaultEventAllBeers extends Service {
                 bo.write(i);
                 i = is.read();
             }
-            System.out.println(TAG+bo);
             return bo.toString();
         } catch (IOException e) {
             return "";
@@ -102,7 +99,6 @@ public class FetchDefaultEventAllBeers extends Service {
 
     @Override
     public void onDestroy() {
-        Log.i(TAG,"onDestroy method called");
     }
 
     @Override

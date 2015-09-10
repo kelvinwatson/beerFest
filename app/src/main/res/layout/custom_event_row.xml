@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Coming Soon!"
-        android:textStyle="italic"
+        android:textStyle="bold|italic"
         android:id="@+id/comingSoon"
         android:fontFamily="sans-serif-thin"
         android:layout_alignBottom="@+id/eventName"

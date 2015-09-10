@@ -25,16 +25,13 @@ public class UpdateFavorites extends Service {
             final boolean isCheckedFinal = intent.getBooleanExtra("checkedFinal", true);
             final int userID = intent.getIntExtra("userID", 0);
             final int beerID = intent.getIntExtra("beerID", 0);
-            Log.i(TAG, "IN SERVICE");
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         if (isCheckedFinal) {  // Toggle clicked
-                            Log.i(TAG, "Add a Favorite!");
                             url = new URL("http://45.58.38.34/addFavorites/" + userID + "/" + beerID);
                         } else {
-                            Log.i(TAG, "Remove Favorite!");
                             url = new URL("http://45.58.38.34/removeFavorites/" + userID + "/" + beerID);
                         }
                         urlConnection = (HttpURLConnection) url.openConnection();
@@ -50,10 +47,7 @@ public class UpdateFavorites extends Service {
                             intent.putExtra("added", isCheckedFinal);
                             sendBroadcast(intent);
                         }
-                        Log.i(TAG, "RESPONSE: " + response);
-                        Log.i(TAG, "Connnection established!  http://45.58.38.34/addFavorites/" + userID + "/" + beerID);
                     } catch (Exception e) {
-                        Log.e(TAG, e.getMessage());
                     }
                 }
             });
@@ -78,7 +72,6 @@ public class UpdateFavorites extends Service {
                 bo.write(i);
                 i = is.read();
             }
-            System.out.println(TAG+"bo=:"+bo);
             return bo.toString();
         } catch (IOException e) {
             return "";

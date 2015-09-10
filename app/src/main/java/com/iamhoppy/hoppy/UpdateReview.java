@@ -29,12 +29,10 @@ public class UpdateReview extends Service {
             final int beerID = intent.getIntExtra("beerID", 0);
             final double rating = intent.getDoubleExtra("rating", -1.0);
             final String comment = intent.getStringExtra("comment");
-            Log.i(TAG, "IN REVIEWS SERVICE");
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        Log.i(TAG, "Add a Favorite!");
                         url = new URL("http://45.58.38.34/addReview/" + userID + "/" + beerID + "/" + rating + "/" + URLEncoder.encode(comment, "UTF-8").replace("+", "%20"));
                         urlConnection = (HttpURLConnection) url.openConnection();
                         InputStream in = new BufferedInputStream(urlConnection.getInputStream());
@@ -50,11 +48,7 @@ public class UpdateReview extends Service {
                             intent.putExtra("success", true);
                             sendBroadcast(intent);
                         }
-                        Log.i(TAG, "RESPONSE: " + response);
-                        Log.i(TAG, "Connnection established!  http://45.58.38.34/addReview/" + userID + "/" + beerID + "/" + rating + "/" + comment);
-
                     } catch (Exception e) {
-                        Log.e(TAG, e.getMessage());
                     }
                 }
             });
@@ -79,7 +73,6 @@ public class UpdateReview extends Service {
                 bo.write(i);
                 i = is.read();
             }
-            System.out.println(TAG+"bo=:"+bo);
             return bo.toString();
         } catch (IOException e) {
             return "";

@@ -326,7 +326,6 @@ public class BeerProfile extends AppCompatActivity {
     private void postComment(){
         userComment = commentTextBox.getText().toString();   //get text from EditText view
         String timeStamp = new SimpleDateFormat("MMM dd, yyyy hh:mm aaa").format(Calendar.getInstance().getTime());
-        System.out.println("post comment timeStamp="+timeStamp);
         userComment = user.getFirstName() + "\n" + timeStamp + "\n" + userComment;
         beer.setMyComment(userComment);
         callReviewService(userComment); //encodes comment and updates API

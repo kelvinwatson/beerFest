@@ -64,8 +64,6 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
         TextView beerABVIBU = (TextView)customView.findViewById(R.id.beerABVIBU);
         TextView averageRating = (TextView)customView.findViewById(R.id.score);
 
-        System.out.println("position=" + position + " singleBeerItem=" + singleBeerItem.getName());
-
         ToggleButton favoriteToggle = (ToggleButton)customView.findViewById(R.id.favoriteToggle);
         if(singleBeerItem.isFavorited()) {
             favoriteToggle.setChecked(true);
@@ -118,7 +116,6 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
                 bo.write(i);
                 i = is.read();
             }
-            System.out.println(TAG+"bo=:"+bo);
             return bo.toString();
         } catch (IOException e) {
             return "";

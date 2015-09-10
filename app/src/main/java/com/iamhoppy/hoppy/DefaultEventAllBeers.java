@@ -59,7 +59,6 @@ public class DefaultEventAllBeers extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i(TAG, "DefaultEventAllBeers: onCreate called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default_event_all_beer);
 
@@ -80,7 +79,6 @@ public class DefaultEventAllBeers extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ListAdapter beerAdapter = new BeerRowAdapter(getApplicationContext(), favoriteBeers, user);
-                Log.i(TAG,"favoriteBeersList="+favoriteBeers.toString());
                 final ListView beerList = (ListView)findViewById(R.id.beerList); //get reference to listview
                 beerList.setAdapter(beerAdapter);
             }
@@ -172,10 +170,6 @@ public class DefaultEventAllBeers extends AppCompatActivity {
             }
             ((Button)findViewById(R.id.favoriteBeersButton)).setClickable(true);
             ((Button)findViewById(R.id.allBeersButton)).setClickable(true);
-            Log.i(TAG,"printing favoriteBeers NOW in onReceive");
-            for(int i=0; i<favoriteBeers.size(); i++){
-                Log.i(TAG,"favoriteBeer.get("+i+")"+favoriteBeers.get(i).getName());
-            }
         }
     }
 
@@ -210,7 +204,6 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     /* Parses JSON object and saves to Beer class */
     private List<Beer> parseBeers(JSONObject startUpDataJSONObj, String param) throws JSONException {
         JSONArray beersJSONArr = startUpDataJSONObj.getJSONArray(param);
-        //System.out.println("beersJSONArr="+beersJSONArr.toString());
         List<Beer> tempBeers = new ArrayList<Beer>();
         for(int i=0, len=beersJSONArr.length(); i<len; i++) {
             JSONObject beerObj = beersJSONArr.getJSONObject(i);
@@ -337,13 +330,11 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     @Override
     protected void onRestart() { //called when: user switches back from recent apps or home screen launger icon; on back button from second activity
         super.onRestart();
-        Log.i(TAG, "DefaultEventAllBeers: onRestart called");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i(TAG, "DefaultEventAllBeers: onStart called");
         /* Receiver for UpdateFavorites Service */
         favoriteReceiver = new FavoriteReceiver();
         registerReceiver(favoriteReceiver, new IntentFilter("com.iamhoppy.hoppy.favoriteDone"));
@@ -368,19 +359,14 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         SpinnerAdapter eventAdapter = new EventSpinnerAdapter(this, events);
         final Spinner eventSpinner = (Spinner)findViewById(R.id.eventSpinner);
         eventSpinner.setAdapter(eventAdapter);
-        System.out.println("eventSpinnerAdapter set");
         eventSpinner.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        //System.out.println("eventSpinner.getPositionForView(view)=" + eventSpinner.getPositionForView(view));
-                        //System.out.println("eventSpinner.getSelectedItemPosition()"+eventSpinner.getSelectedItemPosition());
                         if(position != eventSpinner.getSelectedItemPosition()) { //only fetch if selected position different from current position
                             Toast.makeText(DefaultEventAllBeers.this, "Loading...", Toast.LENGTH_SHORT).show();
                             //call API to fetch all beers
                             Event selectedEvent = (Event) (eventSpinner.getItemAtPosition(position));
-                            System.out.println("in listener: selectedEvent.getBeerCount()=" + selectedEvent.getBeerCount());
-                            System.out.println("in listener: selectedEvent.getBeerCount()=" + selectedEvent.getBeerCount());
                             Intent fetchIntent = new Intent(DefaultEventAllBeers.this, FetchDefaultEventAllBeers.class);
                             try {
                                 if (fetchIntent != null) {
@@ -403,7 +389,6 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         );
 
         /* Create list of beers */
-        System.out.println("UserID: " + user.getId());
         ListAdapter beerAdapter = new BeerRowAdapter(this, beers, user);
         final ListView beerList = (ListView)findViewById(R.id.beerList); //get reference to listview
         beerList.setAdapter(beerAdapter);
@@ -413,7 +398,6 @@ public class DefaultEventAllBeers extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         view.setEnabled(false);
                         Beer selectedBeer = (Beer)(beerList.getItemAtPosition(position));
-                        //System.out.println("User selected=" + selectedBeer.getName());
                         Toast.makeText(DefaultEventAllBeers.this, "Loading...", Toast.LENGTH_SHORT).show();
                         Intent viewBeerProfile = new Intent(DefaultEventAllBeers.this, BeerProfile.class);
                         viewBeerProfile.putExtra("beer", selectedBeer);
@@ -425,7 +409,6 @@ public class DefaultEventAllBeers extends AppCompatActivity {
         );
 
         if(!newlyCreated) {
-            System.out.println("in onRestart");
             /* Call the fetch service */
             getBeerData();
         }
@@ -439,7 +422,6 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i(TAG, "DefaultEventAllBeers: onPause called");
         newlyCreated = false;
         // Logs 'app deactivate' App Event.
         AppEventsLogger.deactivateApp(this);
@@ -448,14 +430,11 @@ public class DefaultEventAllBeers extends AppCompatActivity {
     @Override
     protected void onStop() { //called when user switches between recent apps, or starts new activity
         super.onStop();
-        Log.i(TAG, "DefaultEventAllBeers: onStop called");
-
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.i(TAG, "DefaultEventAllBeers: onDestroy called");
         try{
             unregisterReceiver(favoriteReceiver);
         } catch(Exception e){
