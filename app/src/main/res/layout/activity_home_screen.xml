@@ -50,4 +50,13 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="48dp" />
 
+    <Button
+        android:id="@+id/hoppy_login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hoppy Login"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_below="@+id/login_button" />
+
 </RelativeLayout>

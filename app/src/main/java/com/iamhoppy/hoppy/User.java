@@ -2,9 +2,7 @@ package com.iamhoppy.hoppy;
 
 import java.io.Serializable;
 
-/**
- * Created by Bryce on 8/22/2015.
- */
+/* User class */
 public class User implements Serializable{
     private int id;
 

@@ -3,8 +3,7 @@ package com.iamhoppy.hoppy;
 import java.io.Serializable;
 import java.util.List;
 
-/* Beer class
- */
+/* Beer class*/
 public class Beer implements Serializable, Comparable {
     private int id;
     private String name;

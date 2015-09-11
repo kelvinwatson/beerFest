@@ -289,7 +289,7 @@ app.get('/startUp/:firstName/:lastName/:facebookCredential', function (req, res)
 app.get('/removeFavorites/:userId/:beerId', function (req, res) {
 	var userId = req.params.userId;
 	var beerId = req.params.beerId;
-	winston.info('removeFavorites called with request', {userId: userIds, beerId: beerIds});
+	//winston.info('removeFavorites called with request', {userId: userIds, beerId: beerIds});
 	var reqData = [];
 	reqData.push(parseInt(userId));
 	reqData.push(parseInt(beerId));

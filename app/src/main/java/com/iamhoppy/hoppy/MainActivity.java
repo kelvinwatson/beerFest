@@ -117,8 +117,6 @@ public class MainActivity extends AppCompatActivity {
             profileTracker = new ProfileTracker() {
                 @Override
                 protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
-                    Log.v("facebook - profile", profile2.getFirstName());
-                    System.out.println(isLoggedIn());
                     if (isLoggedIn()) {
                         getFacebookProfile();
                     }

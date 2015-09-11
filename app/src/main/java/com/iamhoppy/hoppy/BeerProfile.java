@@ -23,9 +23,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
 import com.squareup.picasso.Picasso;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -33,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+/* Beer Profile Activity */
 public class BeerProfile extends AppCompatActivity {
     private Beer beer = new Beer();
     private User user = new User();
@@ -56,7 +55,7 @@ public class BeerProfile extends AppCompatActivity {
         user = (User)bundle.getSerializable("user");
         populateBeer();
 
-        //Reference images and add to arrays
+        /* Reference rating images and add to arrays */
         ratingImages = new ArrayList<ImageView>();
         ratingImages.add((ImageView) findViewById(R.id.ratingImg1));
         ratingImages.add((ImageView)findViewById(R.id.ratingImg2));
@@ -100,12 +99,12 @@ public class BeerProfile extends AppCompatActivity {
             }
         });
 
-        //Reference views
+        /* Reference views */
         postInitialCommentRow = (LinearLayout)findViewById(R.id.postInitialCommentRow);
         commentTextBox = (EditText)findViewById(R.id.commentTextBox);
         postCommentButton = (Button)findViewById(R.id.postCommentButton);
 
-        //Listener for postCommentButton
+        /* Listener for postCommentButton */
         postCommentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,7 +112,7 @@ public class BeerProfile extends AppCompatActivity {
             }
         });
 
-        //Set visibility on whether or not user has already posted comment
+        /* Set visibility on whether or not user has already posted comment */
         if(beer.getMyComment() != null && !beer.getMyComment().equals("NULL") && beer.getMyComment().length()>0){  //user has previously recorded a comment
             postInitialCommentRow.setVisibility(View.GONE);
             commentTextBox.setVisibility(View.GONE); //gone means removed from layout and won't occupy space
@@ -128,10 +127,12 @@ public class BeerProfile extends AppCompatActivity {
             displayOtherComments();
         }
 
-        //Set favorite toggle
+        /* Set favorite toggle */
         ToggleButton favoriteToggle = (ToggleButton)findViewById(R.id.favoriteToggle);
         if(beer.isFavorited()) {
             favoriteToggle.setChecked(true);
+        } else{
+            favoriteToggle.setChecked(false);
         }
         favoriteToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -146,29 +147,28 @@ public class BeerProfile extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                getApplicationContext().getApplicationContext().startService(updateIntent);
+                getApplicationContext().startService(updateIntent);
             }
         });
     }
 
+    /* Display comments by other users, i.e. other than the current user's comment*/
     private void displayOtherComments() {
-        //get reference to row
+        /* Get reference to row */
         LinearLayout othersCommentsRow = (LinearLayout)findViewById(R.id.othersCommentsRow);
-
-        //define layout params
+        /* Define layout params */
         LinearLayout.LayoutParams fullWidthText = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT,1f);
         fullWidthText.setMargins(10,5,10,0);
         LinearLayout.LayoutParams halfWidth = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT,0.5f);
         halfWidth.setMargins(10,5,10,0);
         LinearLayout.LayoutParams horizontalRuleParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,1);
         horizontalRuleParam.setMargins(10,5,10,0);
-
-        //loop through display other users' comments array and user firstName and lastInitial
+        /* Loop through display other users' comments array and user firstName and lastInitial */
         List<String> comments = beer.getComments();
         if(comments != null && comments.size() > 0 && !comments.get(0).equals("NULL")){
             int i = 1;
             for (String c : comments) {
-                //parse out the name
+                /* Parse out the name*/
                 String[] commentLines = c.split(System.getProperty("line.separator"));
                 String pUserName = "";
                 String pTime = "";
@@ -178,9 +178,7 @@ public class BeerProfile extends AppCompatActivity {
                 if (commentLines.length > 1) {
                     pTime = commentLines[1];
                 }
-                //TODO: error handling: what if comment is only one line (name?) possible?
-
-                //reconstruct comment from lines array
+                /* Reconstruct comment from lines array */
                 StringBuilder sBuilder = new StringBuilder();
                 for (int k = 2, len = commentLines.length; k < len; k++) {
                     if (k != len - 1) sBuilder.append(commentLines[k] + "\n");
@@ -188,7 +186,7 @@ public class BeerProfile extends AppCompatActivity {
                 }
                 String pComment = sBuilder.toString();
 
-                //generate and display horizontal rule
+                /* Generate and display horizontal rule */
                 if (i != 1) {
                     View horizontalRule = new View(this);
                     horizontalRule.setLayoutParams(horizontalRuleParam);
@@ -197,7 +195,7 @@ public class BeerProfile extends AppCompatActivity {
                     othersCommentsRow.addView(horizontalRule);
                 }
 
-                //generate views
+                /* Generate views */
                 TextView nameView = new TextView(this);
                 nameView.setLayoutParams(halfWidth);
 
@@ -218,13 +216,12 @@ public class BeerProfile extends AppCompatActivity {
                 commentView.setTypeface(null, Typeface.ITALIC);
                 commentView.setTextSize(15);
                 commentView.setTextColor(Color.parseColor("#000000"));
-                //commentView.setBackgroundColor(Color.parseColor("#E0FFFF"));
 
-                //generate new horizontal layout for name and timeStamp and specify params
+                /* Generate new horizontal layout for name and timeStamp and specify params */
                 LinearLayout hLL = new LinearLayout(getApplicationContext());
                 hLL.setOrientation(LinearLayout.HORIZONTAL);
 
-                //add created views
+                /* Add created views */
                 hLL.addView(nameView);
                 hLL.addView(timeView);
                 othersCommentsRow.addView(hLL);
@@ -237,18 +234,18 @@ public class BeerProfile extends AppCompatActivity {
 
 
     private void displayMyComment(){
-        //display user's comment at the top with edit option, hide the EditText and postCommentButton
+        /* Display user's comment at the top with edit option, hide the EditText and postCommentButton */
         myCommentRow = (LinearLayout)findViewById(R.id.myCommentRow);
-        //specify layout parameters for vertical layout
+        /* Specify layout parameters for vertical linear layout */
         LinearLayout.LayoutParams fullWidth = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT,1f);
         fullWidth.setMargins(10,5,10,0);
-        //create new horizontal layout for name and timeStamp and specify params
+        /* Create new horizontal layout for name and timeStamp and specify layout parameters */
         LinearLayout horizontalForNameTime = new LinearLayout(getApplicationContext());
         horizontalForNameTime.setOrientation(LinearLayout.HORIZONTAL);
-        //horizontalLayout set weightSum
+        /* HorizontalLayout - set weightSum*/
         LinearLayout.LayoutParams halfWidth = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT,0.5f);
         halfWidth.setMargins(10,5,10,0);
-        //split fullComment into name and comment http://stackoverflow.com/questions/3451903/extracting-substring-by-lines
+        /* Split fullComment into name and comment http://stackoverflow.com/questions/3451903/extracting-substring-by-lines */
         String[] commentLines = beer.getMyComment().split(System.getProperty("line.separator"));
         String parsedComment = "";
         String parsedUserName = "";
@@ -259,11 +256,9 @@ public class BeerProfile extends AppCompatActivity {
         if(commentLines.length > 1) {
             parsedTime = commentLines[1];
         }
-        //error handling: what if comment is only one line (name?) possible?
         if(commentLines.length > 2) {
-            //reconstruct comment from lines array
+            /* Reconstruct comment from lines array by copying array from index 1 onwards into a commentString */
             StringBuilder aggregate = new StringBuilder();
-            //copy array from index 1 into a commentString
             for (int k = 2, len = commentLines.length; k < len; k++) {
                 if (k != len - 1) aggregate.append(commentLines[k] + "\n");
                 else aggregate.append(commentLines[k]);
@@ -271,20 +266,20 @@ public class BeerProfile extends AppCompatActivity {
             parsedComment = aggregate.toString();
 
         }
-
+        /* User's name - set view parameters and display */
         myNameView = new TextView(this);
         myNameView.setLayoutParams(halfWidth);
         myNameView.setText(parsedUserName);
         myNameView.setTypeface(null, Typeface.BOLD);
         myNameView.setTextColor(Color.parseColor("#EB9100"));
         myNameView.setTextSize(15);
-
+        /* Comment date and time - set view parameters and display */
         timeView = new TextView(this);
         timeView.setLayoutParams(halfWidth);
         timeView.setText(parsedTime);
         timeView.setGravity(Gravity.RIGHT);
         timeView.setTextSize(10);
-
+        /* Comment text - set view parameters and display */
         editableCommentView = new TextView(this);
         editableCommentView.setLayoutParams(fullWidth);
         editableCommentView.setText(parsedComment);
@@ -292,12 +287,10 @@ public class BeerProfile extends AppCompatActivity {
         editableCommentView.setLayoutParams(fullWidth);
         editableCommentView.setTextSize(15);
         editableCommentView.setTextColor(Color.parseColor("#000000"));
-        //editableCommentView.setBackgroundColor(Color.parseColor("#FFFF66"));
-
+        /* "Edit Comment" link - set view parameters and display */
         editCommentClickableView = new TextView(this);
         editCommentClickableView.setText("Edit Comment");
         editCommentClickableView.setTextColor(Color.parseColor("#006699"));
-        //editCommentClickableView.setTypeface(null, Typeface.ITALIC);
         editCommentClickableView.setLayoutParams(fullWidth);
         editCommentClickableView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -311,10 +304,8 @@ public class BeerProfile extends AppCompatActivity {
                 editCommentClickableView.setVisibility(View.GONE);
                 if(beer.getMyComment() != null) {
                     String[] commentLines = beer.getMyComment().split(System.getProperty("line.separator"));
-                    //error handling: what if comment is only one line (name?) possible?
-                    //reconstruct comment from lines array
+                    /* Reconstruct comment from lines array by copying array from index 1 into a commentString*/
                     StringBuilder aggregate = new StringBuilder();
-                    //copy array from index 1 into a commentString
                     for (int k = 2, len = commentLines.length; k < len; k++) {
                         if (k != len - 1) aggregate.append(commentLines[k] + "\n");
                         else aggregate.append(commentLines[k]);
@@ -324,7 +315,6 @@ public class BeerProfile extends AppCompatActivity {
                 }
             }
         });
-
         horizontalForNameTime.addView(myNameView);
         horizontalForNameTime.addView(timeView);
         myCommentRow.addView(horizontalForNameTime);
@@ -332,10 +322,10 @@ public class BeerProfile extends AppCompatActivity {
         myCommentRow.addView(editCommentClickableView);
     }
 
+    /* Save comment locally to object, and send to API */
     private void postComment(){
         userComment = commentTextBox.getText().toString();   //get text from EditText view
         String timeStamp = new SimpleDateFormat("MMM dd, yyyy hh:mm aaa").format(Calendar.getInstance().getTime());
-        System.out.println("post comment timeStamp="+timeStamp);
         userComment = user.getFirstName() + "\n" + timeStamp + "\n" + userComment;
         beer.setMyComment(userComment);
         callReviewService(userComment); //encodes comment and updates API
@@ -350,6 +340,7 @@ public class BeerProfile extends AppCompatActivity {
         displayMyComment();
     }
 
+    /* After a rating image is clicked, set others to clickable */
     private void setClickable(int img1, int img2, int img3, int img4){
         ratingImages.get(img1).setClickable(true);
         ratingImages.get(img2).setClickable(true);
@@ -357,6 +348,7 @@ public class BeerProfile extends AppCompatActivity {
         ratingImages.get(img4).setClickable(true);
     }
 
+    /* Darkens other images on rating image click */
     private void ratingClicked(double rating, boolean makeCall) {
         int intRating = (int)rating;
         beer.setRating(rating);
@@ -407,8 +399,7 @@ public class BeerProfile extends AppCompatActivity {
                 ratingImages.get(3).setImageResource(R.drawable.rate4dark);
                 break;
             }
-            default: { //rate null
-                //no action
+            default: { //rate null, no action
             }
         }
         if(makeCall) {
@@ -416,6 +407,7 @@ public class BeerProfile extends AppCompatActivity {
         }
     }
 
+    /* Sends rating and comment for API call */
     private void callReviewService(String comment) {
         Intent updateIntent = new Intent(getApplicationContext(), UpdateReview.class);
         try {
@@ -433,6 +425,7 @@ public class BeerProfile extends AppCompatActivity {
         getApplicationContext().startService(updateIntent);
     }
 
+    /* Set view fields in beer profile */
     private void populateBeer() {
         ImageView breweryLogo = (ImageView)findViewById(R.id.breweryLogo);
         Picasso.with(getApplicationContext())

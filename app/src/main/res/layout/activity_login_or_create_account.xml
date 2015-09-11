@@ -1,0 +1,91 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFA500"
+    android:orientation="vertical"
+    tools:context=".loginOrCreateAccount">
+
+    <ImageView
+        android:id="@+id/hoppylogo"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:contentDescription="@string/hoppy_logo"
+        android:src="@drawable/logo2"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/firstNameEntry"
+        android:hint="First Name"
+        android:textColorHint="#FFFFFF"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/hoppylogo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:fontFamily="sans-serif"
+        android:ems="10"
+        android:id="@+id/lastNameEntry"
+        android:textColorHint="#FFFFFF"
+
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:nestedScrollingEnabled="false"
+        android:layout_below="@+id/firstNameEntry"
+        android:layout_centerHorizontal="true"
+        android:hint="Last Name" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Log In"
+        android:id="@+id/createAccountButton"
+        android:textColor="#fff"
+        android:background="#5fc63c"
+        android:textSize="18sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_below="@+id/lastNameEntry"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:layout_alignRight="@+id/lastNameEntry"
+        android:layout_alignEnd="@+id/lastNameEntry"
+        android:layout_alignLeft="@+id/lastNameEntry"
+        android:layout_alignStart="@+id/lastNameEntry"
+        android:typeface="normal"
+        android:height="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="No Account? Create one now! "
+        android:id="@+id/noAccountLink"
+        android:textColor="#fff"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/createAccountButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:indeterminate="true"
+        android:layout_below="@+id/noAccountLink"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="33dp" />
+
+</RelativeLayout>

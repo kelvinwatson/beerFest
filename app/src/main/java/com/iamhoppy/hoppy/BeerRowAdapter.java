@@ -64,16 +64,17 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
         TextView beerABVIBU = (TextView)customView.findViewById(R.id.beerABVIBU);
         TextView averageRating = (TextView)customView.findViewById(R.id.score);
 
-        System.out.println("position=" + position + " singleBeerItem=" + singleBeerItem.getName());
-
         ToggleButton favoriteToggle = (ToggleButton)customView.findViewById(R.id.favoriteToggle);
         if(singleBeerItem.isFavorited()) {
             favoriteToggle.setChecked(true);
+        } else {
+            favoriteToggle.setChecked(false);
         }
         favoriteToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 final boolean isCheckedFinal = isChecked;
+                singleBeerItem.setFavorited(isChecked);
                 Intent updateIntent = new Intent(context, UpdateFavorites.class);
                 try {
                     updateIntent.putExtra("userID", user.getId());
@@ -82,7 +83,7 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                getContext().getApplicationContext().startService(updateIntent);
+                getContext().startService(updateIntent);
             }
         });
 
@@ -115,7 +116,6 @@ class BeerRowAdapter extends ArrayAdapter<Beer> {
                 bo.write(i);
                 i = is.read();
             }
-            System.out.println(TAG+"bo=:"+bo);
             return bo.toString();
         } catch (IOException e) {
             return "";
