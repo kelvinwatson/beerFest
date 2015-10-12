@@ -4,6 +4,9 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
+* {
+	font-family: 'Open Sans', sans-serif;
+}
 html {
   font-family: sans-serif;
   -webkit-text-size-adjust: 100%;
@@ -5296,7 +5299,7 @@ a.thumbnail.active {
 .list-group-item {
   position: relative;
   display: block;
-  padding: 10px 15px;
+  padding: 10px 0px;
   margin-bottom: -1px;
   background-color: #fff;
   border: 1px solid #ddd;
@@ -6798,5 +6801,18 @@ button.close {
   .hidden-print {
     display: none !important;
   }
+}
+
+#front_page {
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ff7400+51,ffa500+87,ffa500+87,ffa500+98,ffa500+99 */
+	background: #ff7400; /* Old browsers */
+	background: -moz-linear-gradient(top,  #ff7400 51%, #ffa500 87%, #ffa500 87%, #ffa500 98%, #ffa500 99%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(51%,#ff7400), color-stop(87%,#ffa500), color-stop(87%,#ffa500), color-stop(98%,#ffa500), color-stop(99%,#ffa500)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #ff7400 51%,#ffa500 87%,#ffa500 87%,#ffa500 98%,#ffa500 99%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #ff7400 51%,#ffa500 87%,#ffa500 87%,#ffa500 98%,#ffa500 99%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #ff7400 51%,#ffa500 87%,#ffa500 87%,#ffa500 98%,#ffa500 99%); /* IE10+ */
+	background: linear-gradient(to bottom,  #ff7400 51%,#ffa500 87%,#ffa500 87%,#ffa500 98%,#ffa500 99%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff7400', endColorstr='#ffa500',GradientType=0 ); /* IE6-9 */
+	color:white;
 }
 /*# sourceMappingURL=bootstrap.css.map */
