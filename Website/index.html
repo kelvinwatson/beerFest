@@ -16,6 +16,7 @@
   </head>
   
   <body id="front_page">
+    <div id="fb-root"></div>
     <nav style="background-color:transparent; border-bottom: white;" class="navbar navbar-inverse navbar-fixed-top">
       <div style="background-color:transparent;" class="container">
         <div style="background-color:transparent;" class="navbar-header">
@@ -40,8 +41,10 @@
     <div class="container"> 
       <div class="row">
         <div style="text-align:center" class="col-xs-12">
-          <img src="images/cover.png">
-          <p><a style="color:white;background-color:#3b5998;" href="default_event_all_beers.html" class="btn btn-default">FACEBOOK LOGIN BUTTON</a></p>
+          <img class="img-responsive" src="images/cover.png">
+          <p>
+            <div class="fb-login-button" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false"></div>
+          </p>
         </div>
       </div>
     </div>
@@ -67,6 +70,7 @@
   <!--<script src="js/jquery.min.js"></script>-->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/index.js" />
 	<script>
 		$(document).ready(function () {
 			$('.dropdown-toggle').dropdown();
