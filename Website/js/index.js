@@ -8,16 +8,14 @@
     // for FB.getLoginStatus().
     if (response.status === 'connected') {
       // Logged into your app and Facebook.
-      testAPI();
+      authenticationComplete();
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
-      document.getElementById('status').innerHTML = 'Please log ' +
-        'into this app.';
+      console.log('not_authorized');
     } else {
       // The person is not logged into Facebook, so we're not sure if
       // they are logged into this app or not.
-      document.getElementById('status').innerHTML = 'Please log ' +
-        'into Facebook.';
+      console.log('unknown');
     }
   }
 
@@ -29,15 +27,6 @@
       statusChangeCallback(response);
     });
   }
-
-  window.fbAsyncInit = function() {
-  FB.init({
-    appId      : '866256996757059',
-    cookie     : true,  // enable cookies to allow the server to access 
-                        // the session
-    xfbml      : true,  // parse social plugins on this page
-    version    : 'v2.5' // use version 2.2
-  });
 
   // Now that we've initialized the JavaScript SDK, we call 
   // FB.getLoginStatus().  This function gets the state of the
@@ -51,12 +40,6 @@
   //
   // These three cases are handled in the callback function.
 
-  FB.getLoginStatus(function(response) {
-    statusChangeCallback(response);
-  });
-
-  };
-
   // Load the SDK asynchronously
   (function(d, s, id) {
     var js, fjs = d.getElementsByTagName(s)[0];
@@ -68,7 +51,7 @@
 
   // Here we run a very simple test of the Graph API after login is
   // successful.  See statusChangeCallback() for when this call is made.
-  function testAPI() {
+  function authenticationComplete() {
     console.log('Welcome!  Fetching your information.... ');
     FB.api('/me', function(loginResponse) {
       console.log('Successful login for: ' + loginResponse.name);
@@ -88,3 +71,21 @@
       }
     });
   }
+
+  window.fbAsyncInit = function() {
+  FB.init({
+    appId      : '866256996757059',
+    cookie     : false,  // enable cookies to allow the server to access 
+                        // the session
+    xfbml      : true,  // parse social plugins on this page
+    version    : 'v2.5' // use version 2.2
+  });
+  FB.getLoginStatus(function(response) {
+    statusChangeCallback(response);
+  });
+  FB.Event.subscribe('auth.login', function(response) {
+    statusChangeCallback(response);
+  });
+};
+
+  

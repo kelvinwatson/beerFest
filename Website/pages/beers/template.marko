@@ -76,29 +76,37 @@
         <div class="col-md-12">
 			<div class="list-group">
 				<for each="beer in data.beers">
-					<a href="/beer/${data.user.first_name}/${data.user.last_name}/${data.user.facebook_credential}/${beer.beerID}" class="list-group-item">
+					<div class="list-group-item">
 						<div class="container">
 							<div class="row">
-								<div style="padding-left:10px;padding-right:10px" class="col-xs-3">
-									<img style="height:80px;width:80px;" src="${beer.logoUrl}">
-								</div>
-								<div style="" class="col-xs-7">
-									<h4 class="list-group-item-heading">${beer.beerName}</h4>
-									${beer.breweryName}<br>${beer.beerType}<br><if test="notEmpty(beer.beerABV)">ABV ${beer.beerABV},</if><if test="notEmpty(beer.beerIBU)">IBU ${beer.beerIBU}</if>
-								</div>
-								<div style="padding-left:5px; text-align:right" class="col-xs-2">
-									<span style="color:orange; font-size:1.5em;">${beer.averageRating}</span>
+                                <a href="/beer/${data.user.first_name}/${data.user.last_name}/${data.user.facebook_credential}/${beer.beerID}">
+    								<div style="padding-left:10px;padding-right:10px" class="col-xs-3">
+    									<img style="height:80px;width:80px;" src="${beer.logoUrl}">
+    								</div>
+    								<div style="" class="col-xs-7">
+    									<h4 class="list-group-item-heading">${beer.beerName}</h4>
+                                        <span style="color:black;">
+    									   ${beer.breweryName}<br>${beer.beerType}<br><if test="notEmpty(beer.beerABV)">ABV ${beer.beerABV},</if><if test="notEmpty(beer.beerIBU)">IBU ${beer.beerIBU}</if>
+                                        </span>
+    								</div>
+                                </a>
+								<div style="padding-left:5px; text-align:center" class="col-xs-2">
+									<span style="color:orange; font-size:1.5em;">${beer.averageRating?beer.averageRating:'3'}</span>
 									<br>
 									<if test="beer.favorited">
-										<img style="height:50px;width:50px;" src="/images/bg_check_on.png">
+										<a id="img-link-${beer.beerID}" href="#" class="favorite-img" data-favorite="true" data-beerid="${beer.beerID}" data-userid="${data.user.id}">
+											<img id="img-check-${beer.beerID}" style="height:50px;width:50px;" class="img-responsive on" src="/images/bg_check_on.png"/>
+										</a>
 									</if>
 									<else>
-										<img style="height:50px;width:50px;" src="/images/bg_check_off.png">
-									</else>
+                                        <a id="img-link-${beer.beerID}" href="#" class="favorite-img" data-favorite="false" data-beerid="${beer.beerID}" data-userid="${data.user.id}">
+										  <img id="img-check-${beer.beerID}" style="height:50px;width:50px;" class="img-responsive off" src="/images/bg_check_off.png">
+									    </a>
+                                    </else>
 								</div>
 							</div>
 						</div>
-					</a>
+					</div>
 				</for>
 			</div>
         </div>
@@ -121,7 +129,8 @@
 				<span style="color:white; text-align:center">My Bucket List</span>
 			</div>
 			</div>-->
-        </div>
+            </div>
+        </div>    
     </div>
 </footer>
 
@@ -136,7 +145,8 @@
 		$(document).ready(function () {
 			$('.dropdown-toggle').dropdown();
 		});
-	</script>   
+	</script> 
+    <script type="text/javascript" src="/js/beers.js" />  
   </body>
 </html>
 
