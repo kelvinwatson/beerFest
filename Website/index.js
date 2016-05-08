@@ -26,6 +26,11 @@ app.get('/', function (req, res) {
 
 app.get('/beers/:fName/:lName/:id', require('./pages/beers/'));
 app.get('/beer/:fName/:lName/:id/:beerId', require('./pages/beer/'));
+app.get('/favorites/:fName/:lName/:id', function(req, res) {
+  var beers = require('./pages/beers/');
+  req.favorites = true;
+  beers(req, res);
+});
 
 var server = app.listen(80, function () {
 
@@ -54,6 +59,17 @@ var server = app.listen(80, function () {
 
 
 ///////////////////////////////////// WEB SERVER //////////////////////////////////////
+
+function addFeedback(reqData, callback) {
+  var addFeedback = "INSERT INTO feedback (feedback, recorded) VALUES ?;";
+  con.query(addFeedback, [[reqData]], function(err, results) {
+    if(err) {
+      callback(false);
+    } else {
+      callback(true, results);
+    }
+  });
+}
 
 function addReview(reqData, callback) {
   var addReview = "INSERT INTO reviews (user_id, beer_id, rating, comment) VALUES ?;";
@@ -230,6 +246,34 @@ function matchFavoriteBeers(beers, favorites) {
   }
   return {beers: beers, favorites: favorites};
 }
+
+app.get('/addFeedback/:feedback', function (req, res) {
+  var feedback = req.params.feedback;
+  var date = new Date();
+  var year = date.getFullYear()+'';
+  var month = (date.getMonth()+1)+'';
+  var day = date.getDay();
+  if(day < 10) {
+    day = '0' + day;
+  }
+  var reqData = [feedback, year+month+day];
+  addFeedback(reqData, function(success, rows) {
+    var response = {};
+    if(success) {
+      response.success = success;
+      winston.info('addFeedback returning', {success: success});
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.stringify(response));
+      return;
+    } else {
+      response.success = false;
+      winston.info('addFeedback returning', {success: success});
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.stringify(response));
+      return;
+    }
+  });
+});
 
 app.get('/addReview/:userId/:beerId/:rating/:comment', function (req, res) {
   var userId = req.params.userId;

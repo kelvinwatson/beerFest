@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="generator" content=
-    "HTML Tidy for Windows (vers 14 February 2006), see www.w3.org">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
@@ -18,23 +16,47 @@
     <nav style="border-bottom: white;" class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div style="background-color:orange;" class="navbar-header">
-          <button style="border-color:white" type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <button id="navbar-btn" style="border-color:white" type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a style="color:white" class="navbar-brand" href="#">Hoppy</a>
+          <a style="height: 2em; padding: 0px; position: absolute;left:50%;margin-left:-25px;" class="navbar-brand" href="/beers/${data.user.first_name}/${data.user.last_name}/${data.user.facebook_credential}"><img style="width:50px;height:50px" class="img-responsive" src="/images/logo2.png"></a>
         </div>
         <div style="background-color:orange; border-color:white" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a style="color:white" href="#about" >About</a></li>
-            <li><a style="color:white" href="#contact">Feedback</a></li>
+            <li><a style="color:white" href="https://play.google.com/store/apps/details?id=com.iamhoppy.hoppy">Hoppy for Android</a></li>
+            <li><a style="color:white" data-toggle="modal" data-target="#feedbackModal">Feedback</a></li>
           </ul>
-
         </div><!--/.navbar-collapse -->
       </div>
     </nav>
     
+    <!--MODAL-->
+    <!-- Modal -->
+    <div id="feedbackModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Tell us what you think</h4>
+          </div>
+          <div class="modal-body">          
+            <div class="form-group">
+              <textarea id="feedback-text" class="form-control" rows="5" id="feedbackInput"></textarea>
+            </div>  
+          </div>
+          <div class="modal-footer">
+            <button id="submit-feedback-btn" data-userid="${data.user.id}" style="background-color:orange;color:white;" type="submit" class="btn btn-default">Submit</button>  <button id="feedback-close-btn" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
     <div class="container">
       <div class="row">
         <div class="col-xs-5">
@@ -54,18 +76,20 @@
         </div>
       <div style="text-align:center" class="col-xs-6">
           <if test="data.favorited">
-            <img class="img-responsive on" style=
-            "height:70px;width:70px;display:inline" src="/images/bg_check_on.png">
+            <a style="display: inline-block" id="img-link-${data.beerID}" href="javascript:void(0);" class="favorite-img" data-favorite="true" data-beerid="${data.beerID}" data-userid="${data.user.id}">
+              <img id="img-check-${data.beerID}" style="height:50px;width:50px;" class="img-responsive on" src="/images/bg_check_on.png"/>
+            </a>
           </if>
           <else>
-            <img class="img-responsive off" style=
-            "height:70px;width:70px;display:inline" src="/images/bg_check_off.png">
+            <a style="display: inline-block" id="img-link-${data.beerID}" href="javascript:void(0);" class="favorite-img" data-favorite="false" data-beerid="${data.beerID}" data-userid="${data.user.id}">
+            <img id="img-check-${data.beerID}" style="height:50px;width:50px;" class="img-responsive off" src="/images/bg_check_off.png">
+          </a>
           </else>
         </div>
-        <div class="col-xs-6">
+        <div class="col-xs-6" style="text-align:center;">
           <h5>
             Average Rating
-          </h5>${(empty(data.averageRating) || data.averageRating==0)?'3':'${data.averageRating}'}
+          </h5><span style="color:orange;font-size:1.3em;font-weight:bold;">${(empty(data.averageRating) || data.averageRating==0)?'3':'${data.averageRating}'}</span>
         </div>
         <div style="text-align:center" class="col-xs-12">
           . . .
@@ -85,21 +109,21 @@
       </div>
       <div style="text-align:center" class="row">
         <div class="col-xs-1"></div>
-        <div class="col-xs-2">
+        <a class="ratingLink col-xs-2${data.myRating==1?' ratingOn':''}" data-rating="1" data-beerid="${data.beerID}" data-userid="${data.user.id}">
             <img style="width:100%" src="${data.myRating==1?'/images/rate1.png':'/images/rate1dark.png'}"><br>1
-        </div>
-        <div class="col-xs-2">
+        </a>
+        <a class="ratingLink col-xs-2${data.myRating==2?' ratingOn':''}" data-rating="2" data-beerid="${data.beerID}" data-userid="${data.user.id}">
             <img style="width:100%" src="${data.myRating==2?'/images/rate2.png':'/images/rate2dark.png'}"><br>2
-        </div>
-        <div class="col-xs-2">
+        </a>
+        <a class="ratingLink col-xs-2${(empty(data.myRating) || data.myRating==3)?' ratingOn':''}" data-rating="3" data-beerid="${data.beerID}" data-userid="${data.user.id}">
             <img style="width:100%" src="${(empty(data.myRating) || data.myRating==3)?'/images/rate3.png':'/images/rate3dark.png'}"><br>3
-        </div>
-        <div class="col-xs-2">
+        </a>
+        <a class="ratingLink col-xs-2${data.myRating==4?' ratingOn':''}" data-rating="4" data-beerid="${data.beerID}" data-userid="${data.user.id}">
             <img style="width:100%" src="${data.myRating==4?'/images/rate4.png':'/images/rate4dark.png'}"><br>4
-        </div>
-        <div class="col-xs-2">
+        </a>
+        <a class="ratingLink col-xs-2${data.myRating==5?' ratingOn':''}" data-rating="5" data-beerid="${data.beerID}" data-userid="${data.user.id}">
             <img style="width:100%" src="${data.myRating==5?'/images/rate5.png':'/images/rate5dark.png'}"><br>5
-        </div>
+        </a>
         <div class="col-xs-1"></div>
       </div>
       <div class="row">
@@ -108,14 +132,38 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-xs-12">
-          <form role="form">
+        <div id="comment-txt-parent" class="col-xs-12" style="${(data.myComment && data.myComment != 'NULL')?'display:none':''}">
             <div class="form-group">
                 <label for="comment">Comment:</label>
-                    <textarea class="form-control" rows="5" id="comment"></textarea>
+                    <textarea class="form-control" rows="5" id="commentInput"></textarea>
             </div>  
-            <button style="background-color:orange;color:white;" type="submit" class="btn btn-default">Submit</button>    
-          </form>
+            <button id="submit-comment-btn" data-firstname="${data.user.first_name}" style="background-color:orange;color:white;" type="submit" class="btn btn-default">Submit</button>    
+        </div>
+        <div id="my-comment-parent" style="${(data.myComment && data.myComment != 'NULL')?'':'display:none;'}">
+          <div class="col-xs-7">
+            <h6 style="font-weight:bold;color:orange">My Comment:</h6>    
+          </div>
+          <div style="text-align:right"class="col-xs-5">
+            <h6 id="my-comment-date"><if test="notEmpty(data.myComment)">${data.myComment.split('\n')[1]}</if></h6>          
+          </div>
+          <div class="col-xs-12">
+            <p id="my-comment-text">
+              <if test="notEmpty(data.myComment)">
+                <var name="commentArray" value="data.myComment.split('\n')" />
+                <for each="stringPart in commentArray" status-var="loop">
+                  <if test="loop.getIndex() > 1">
+                    $!{data.myComment.split('\n')[loop.getIndex()]}
+                    <if test="loop.getIndex() < commentArray.length - 1">
+                      <br>
+                    </if>
+                  </if>
+                </for>
+              </if>
+            </p>    
+          </div> 
+          <div class="col-xs-12">
+            <a id="my-comment-edit">Edit Comment</a>    
+          </div>
         </div>
       </div>
       <div class="row">
@@ -123,18 +171,31 @@
           <h4 style="border-bottom:1px solid orange">See what others think</h4>    
         </div>
       </div>
-      <div class="row">
-        <div class="col-xs-8">
-          <h6 style="font-weight:bold;color:orange">First Name Only</h4>    
+      <if test="notEmpty(data.comments)">
+        <for each="comment in data.comments">
+          <div class="row">
+            <div class="col-xs-7">
+              <h6 style="font-weight:bold;color:orange">${comment.split('\n')[0]}</h6>    
+            </div>
+            <div style="text-align:right"class="col-xs-5">
+              <h6>${comment.split('\n')[1]}</h6>          
+            </div>
+            <div class="col-xs-12">
+              <p>$!{comment.split('\n')[2]}</p>    
+            </div>
+          </div>
+        </for>
+      </if>
+      <else>
+        <div class="row">
+          <div class="col-xs-12">
+            <h6 style="font-weight:bold;color:orange">No Comments Yet!</h6>    
+          </div>
+          <div class="col-xs-12">
+            <p>Be the first!</p>    
+          </div>
         </div>
-        <div style="text-align:right"class="col-xs-4">
-          <h6>Oct 11, 2015 04:54 PM</h4>          
-        </div>
-        <div class="col-xs-12">
-          <p>Comment Stuff</p>    
-        </div>
-        
-      </div>
+      </else>
     </div>
     
     
@@ -149,5 +210,4 @@
                         $('.dropdown-toggle').dropdown();
                 });
     </script>
-  </body>
-</html>
+    <script type="text/javascript" src="/js/beers.js" /> 

@@ -6,6 +6,9 @@ var template = require('./template.marko');
 module.exports = function (req, res) {
 	console.log('testing');
 	getBeers(req, function(data) {
+		if(req.favorites) {
+			data.beers = data.favorites;
+		}
 		template.render(data, res);
 	});	
 };

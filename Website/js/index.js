@@ -41,11 +41,26 @@
   // These three cases are handled in the callback function.
 
   // Load the SDK asynchronously
+window.fbAsyncInit = function() {
+  FB.init({
+    appId      : '866256996757059',
+    cookie     : false,  // enable cookies to allow the server to access 
+                        // the session
+    xfbml      : true,  // parse social plugins on this page
+    version    : 'v2.5' // use version 2.2
+  });
+  FB.getLoginStatus(function(response) {
+    statusChangeCallback(response);
+  });
+  FB.Event.subscribe('auth.login', function(response) {
+    statusChangeCallback(response);
+  });
+};
   (function(d, s, id) {
     var js, fjs = d.getElementsByTagName(s)[0];
     if (d.getElementById(id)) return;
     js = d.createElement(s); js.id = id;
-    js.src="http://connect.facebook.net/en_US/all.js"
+    js.src="http://connect.facebook.net/en_US/sdk.js"
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
 
@@ -72,20 +87,6 @@
     });
   }
 
-  window.fbAsyncInit = function() {
-  FB.init({
-    appId      : '866256996757059',
-    cookie     : false,  // enable cookies to allow the server to access 
-                        // the session
-    xfbml      : true,  // parse social plugins on this page
-    version    : 'v2.5' // use version 2.2
-  });
-  FB.getLoginStatus(function(response) {
-    statusChangeCallback(response);
-  });
-  FB.Event.subscribe('auth.login', function(response) {
-    statusChangeCallback(response);
-  });
-};
+
 
   

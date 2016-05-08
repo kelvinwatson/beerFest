@@ -25,6 +25,7 @@ function getBeers(req, callback) {
 	    	}
 	    }
 	    console.log('selectedBeer: ' + selectedBeer);
+	    selectedBeer.user = responseData.user;
 	    callback(selectedBeer);
 	});
 } 
