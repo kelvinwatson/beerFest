@@ -1,5 +1,4 @@
 function init(){
-  debugger;
   $('.dropdown-toggle').dropdown();
   /*$("#carousel-example-generic").swiperight(function() {
     $(this).carousel('prev');
@@ -16,7 +15,10 @@ function init(){
         $(this).parent().carousel('prev');
       },
       //Default is 75px, set to 0 for demo so any distance triggers swipe
-      threshold:0
+      threshold:0,
+    });
+    $('#carousel-example-generic').carousel({
+      interval:false
     });
 }
 
