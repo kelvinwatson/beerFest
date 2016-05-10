@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Hoppy for iOS</title>
+
+    <!-- Sets initial viewport load and disables zooming  -->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+
+    <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <!-- Include the compiled Ratchet CSS -->
+    <link rel="stylesheet" href="css/owl.carousel.css" />
+
+    <link href="css/ratchet.css" rel="stylesheet">
+    <link href="css/ratchet-theme-ios.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Alegreya+Sans:400,300,100' rel='stylesheet' type='text/css'>
+
+    <!-- Include the compiled Ratchet JS -->
+    <script src="js/ratchet.js"></script>
+    <script src="js/index.js"></script>
+
+  </head>
+  <body class="main-background">
+
+    <!-- Make sure all your bars are the first things in your <body> -->
+    <nav class="bar bar-nav">
+      <div>
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <a class="icon icon-bars pull-right orange-color"></a>
+        </button>
+      </div>
+      <h1 class="title">
+        HOPPY
+        <!--<span class="icon icon-caret"></span>-->
+      </h1>
+      <div style="background-color:orange; border-color:white" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li><a style="color:white" href="#about">About</a></li>
+          <li><a style="color:white" href="#contact">Feedback</a></li>
+        </ul>
+      </div><!--/.navbar-collapse -->
+    </nav>
+    <!-- Wrap all non-bar HTML in the .content div (this is actually what scrolls) -->
+    <div class="content main-background">
+      <div class="content-padded" style="height:100px">
+        <!--<h2 class="title-text">Oregon Brewer's Festival</h2>
+        <p class="subtitle-text">Wednesday, July 27, 2016</p>-->
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+              <ol class="carousel-indicators">
+                <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+              </ol>
+
+              <div class="carousel-inner" role="listbox">
+                <div class="item active carousel-img-dimensions">
+                  <img class="carousel-img-dimensions blacken-filter" src="https://i.ytimg.com/vi/plTYpEYRdTI/maxresdefault.jpg" alt="...">
+                  <div class="carousel-caption">
+                      <h2 class="title-text">Oregon Brewer's Festival</h2>
+                      <p class="subtitle-text">Wednesday, July 27, 2016</p>
+                  </div>
+                </div>
+                <div class="item carousel-img-dimensions">
+                  <img class="carousel-img-dimensions blacken-filter" src="https://www.travelportland.com/wp-content/uploads/2013/07/2013_TP_winter_holidayale010-652x521.jpg" alt="...">
+                  <div class="carousel-caption">
+                    <h2 class="title-text">Holiday Ale Fest</h2>
+                    <p class="subtitle-text">Wednesday, July 27, 2016</p>
+                  </div>
+                </div>
+                ...
+              </div>
+
+
+              <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+              </a>
+              <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <ul class="table-view">
+          <li class="table-view-cell">
+            <a class="navigate-right" href="profile.html" data-transition="slide-in">
+              <img class="media-object pull-left brewery-logo" src="http://hopworksbeer.com/wp-content/themes/hub-2015/img/logo_hub.png">
+              <span class="badge">3.0</span>
+              <div class="media-body">
+                <strong>2 Fest, 2 Furious</strong><br>
+                Hopworks Urban Brewery<br>
+                Imperial Mrzen<br>
+                ABV 8.5, IBU 45
+              </div>
+              <div class="toggle active">
+                <div class="toggle-handle"></div>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+
+      <nav class="bar bar-tab">
+        <a id="a-to-main" class="tab-item">
+          <span class="icon icon-list"></span>
+          <span class="tab-label">All Beers</span>
+        </a>
+        <a id="a-to-favorites" class="tab-item active">
+          <span class="icon icon-star-filled"></span>
+          <span class="tab-label">Bucket List</span>
+        </a>
+      </nav>
+    </div>
+
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.touchSwipe.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/index.js"></script>
+    <script>
+      $('#a-to-favorites').click( function(e) {
+        e.preventDefault();
+        return false;
+      });
+
+      $('#a-to-main').click( function(e) {
+        e.preventDefault();
+        debugger;
+        loadCarousel('main.html');
+        return false;
+      });
+
+      $(document).ready(init);
+    </script>
+  </body>
+
+</html>

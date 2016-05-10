@@ -61,13 +61,21 @@
   color: #ffa500
 }
 
-.icon {
+.icon-bars:before{
   color:#ffa500;
 }
 
-.orange-theme {
+.icon-left-nav:before{
+  color:#ffa500;
+}
+
+.orange-border {
   color:#ffa500;
   border: 1px solid orange;
+}
+
+.orange-color {
+  color:#ffa500;
 }
 
 .comment-box {
@@ -86,3 +94,24 @@
   border-top: 1px solid #fff;
   border-bottom: 1px solid #fff;
 }
+
+.btn.btn-block.btn-outlined.orange-color {
+  color:#ffa500;
+  border: 1px solid orange;
+}
+
+.carousel-img-dimensions {
+  width: 100%;
+  min-height: 190px;
+  max-height: 190px;
+}
+/*
+.item {
+  -webkit-filter: grayscale(50%);  Chrome, Safari, Opera
+  filter: grayscale(50%);
+}
+
+.active {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
+}*/
