@@ -1,0 +1,66 @@
+* {
+  font-family: 'Alegreya Sans', sans-serif;
+  /*font-family: 'Lato', sans-serif;*/
+  font-weight: 300;
+}
+
+.main-background {
+  /*background-image: url("http://3.bp.blogspot.com/-B1u_CRBljaU/UAXJJFimHRI/AAAAAAAABWk/bhbDG3L-hqg/s1600/The+setup.jpg");*/
+  background-color:brown;
+  border-bottom: 1px solid rgba(255,153,0,0.5);
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.6) 100%), url(http://3.bp.blogspot.com/-B1u_CRBljaU/UAXJJFimHRI/AAAAAAAABWk/bhbDG3L-hqg/s1600/The+setup.jpg);
+}
+
+.bar-tab {
+  background-color:#000;
+}
+
+.brewery-logo {
+  max-height:80px;
+  max-width: 80px;
+}
+
+/*background for title bar*/
+.bar-nav {
+  background-image: linear-gradient(to bottom, rgba(255, 153, 0, 0.1) 0%, rgba(255, 153, 0, 0.1) 100%), url(http://3.bp.blogspot.com/-B1u_CRBljaU/UAXJJFimHRI/AAAAAAAABWk/bhbDG3L-hqg/s1600/The+setup.jpg);
+  /*background: rgba(255, 153, 0, 0.1);*/
+  color:white;
+}
+
+/*background for title bar*/
+.navbar-header {
+  background-image: linear-gradient(to bottom, rgba(255, 153, 0, 0.1) 0%, rgba(255, 153, 0, 0.1) 100%), url(http://3.bp.blogspot.com/-B1u_CRBljaU/UAXJJFimHRI/AAAAAAAABWk/bhbDG3L-hqg/s1600/The+setup.jpg);
+  /*background: rgba(255, 153, 0, 0.1);*/
+  color:white;
+}
+
+/*background for title bar*/
+.navbar-header {
+  background-image: linear-gradient(to bottom, rgba(255, 153, 0, 0.1) 0%, rgba(255, 153, 0, 0.1) 100%), url(http://3.bp.blogspot.com/-B1u_CRBljaU/UAXJJFimHRI/AAAAAAAABWk/bhbDG3L-hqg/s1600/The+setup.jpg);
+  /*background: rgba(255, 153, 0, 0.1);*/
+  color:white;
+}
+
+
+
+.title {
+  color:white;
+}
+
+.title-text {
+  color:white;
+  font-weight:400;
+}
+
+.subtitle-text {
+  color:white;
+  font-weight:400;
+}
+
+.bar-tab .tab-item.active, .bar-tab .tab-item:active{
+  color: #ffa500
+}
+
+.icon {
+  color:#ffa500;
+}
