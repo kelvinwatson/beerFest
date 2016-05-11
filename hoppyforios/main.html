@@ -62,8 +62,15 @@
                     <img class="carousel-img-dimensions" src="https://i.ytimg.com/vi/plTYpEYRdTI/maxresdefault.jpg" alt="...">
                   </div>
                   <div class="carousel-caption">
-                    <h2 class="title-text">Oregon Brewer's Festival</h2>
-                    <p class="subtitle-text">Wednesday, July 27, 2016</p>
+                    <div class="row">
+                      <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7 col-xl-7 zero-padding">
+                        <h2 class="title-text text-left zero-margin-top">Oregon Brewer's Festival</h2>
+                        <p class="subtitle-text text-left">Wednesday, July 27, 2016</p>
+                      </div>
+                      <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 col-xl-5 zero-padding">
+                        <img class="event-logo" src="http://www.oregonbrewfest.com/images/logo.gif">
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div class="item carousel-img-dimensions">
@@ -71,8 +78,15 @@
                     <img class="carousel-img-dimensions" src="https://www.travelportland.com/wp-content/uploads/2013/07/2013_TP_winter_holidayale010-652x521.jpg" alt="...">
                   </div>
                   <div class="carousel-caption">
-                    <h2 class="title-text">Holiday Ale Fest</h2>
-                    <p class="subtitle-text">Wednesday, July 27, 2016</p>
+                    <div class="row">
+                      <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7 col-xl-7 zero-padding">
+                        <h2 class="title-text text-left zero-margin-top">Holiday Ale Fest</h2>
+                        <p class="subtitle-text text-left">Wednesday, July 27, 2016</p>
+                      </div>
+                      <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 col-xl-5 zero-padding">
+                        <img class="event-logo" src="http://beeralien.com/wp-content/uploads/2015/09/13HolidayAleFest-630x350.jpg">
+                      </div>
+                    </div>
                   </div>
                 </div>
                 ...
@@ -177,7 +191,7 @@
         </ul>
       </div>
 
-
+      <!-- BEGIN TABS -->
       <nav class="bar bar-tab">
         <a class="tab-item active" href="main.html">
           <span class="icon icon-list"></span>
@@ -188,12 +202,13 @@
           <span class="tab-label">Bucket List</span>
         </a>
       </nav>
+      <!-- END TABS -->
+
     </div>
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery.touchSwipe.min.js"></script>
-    <script src="js/owl.carousel.min.js"></script>
     <script src="js/index.js"></script>
     <script>
       $('#a-to-main').click( function(e) {
